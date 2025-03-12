@@ -1,6 +1,6 @@
 <!-- Overlay de carga con video a pantalla completa -->
 <div *ngIf="showOverlay" class="loading-overlay">
-  <video #loadingVideo autoplay muted (ended)="onVideoEnded()" class="loading-video">
+  <video #loadingVideo autoplay muted preload="auto" (ended)="onVideoEnded()" class="loading-video">
     <source [src]="zoneVideoSource" type="video/mp4">
     Tu navegador no soporta el elemento de video.
   </video>
