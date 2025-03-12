@@ -1,0 +1,21 @@
+<div class="header">
+    <div class="header-left">
+      <!-- Al hacer clic en el icono se activa el dropdown -->
+      <i class='bx bx-chevron-down' (click)="toggleDropdown()"></i>
+      
+      <!-- Dropdown: se muestra solo cuando dropdownVisible es true -->
+      <div class="dropdown" *ngIf="dropdownVisible">
+        <ul>
+          <li><a routerLink="/perfil">Perfil</a></li>
+          <li><a routerLink="/configuracion">Configuración</a></li>
+          <li><a routerLink="/soporte">Soporte</a></li>
+          <li><a routerLink="/configuracion">Campiamigo</a></li>
+
+        </ul>
+      </div>
+    </div>
+    
+    <h2>VeredaMarket</h2>
+    <i class='bx bx-fingerprint bx-flashing bx-rotate-180'></i>
+  </div>
+  
