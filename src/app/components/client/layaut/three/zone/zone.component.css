@@ -58,7 +58,7 @@
     height: 20px;
     background: transparent;
     border-radius: 50%;
-    box-shadow: -10px 10px 0 #ebf1f6;
+    box-shadow: -10px 10px 0 #fff;
 }
 
 .card1 .imgbx::after {
@@ -70,7 +70,7 @@
     height: 20px;
     background: transparent;
     border-radius: 50%;
-    box-shadow: -10px 10px 0 #ebf1f6;
+    box-shadow: -10px 10px 0 #fff;
 }
 
 .card1 .content {
@@ -88,8 +88,8 @@
     height: 80px;
     width: 50%;
     background: #232949;
-    border-top: 10px solid #ebf1f6;
-    border-right: 10px solid #ebf1f6;
+    border-top: 10px solid #fff;
+    border-right: 10px solid #fff;
     border-top-right-radius: 25px;
     display: flex;
     flex-direction: row;
@@ -105,7 +105,7 @@
     height: 25px;
     background: transparent;
     border-radius: 50%;
-    box-shadow: -10px -10px 0 #ebf1f6;
+    box-shadow: -10px -10px 0 #fff;
     top: 0;
     left: 0;
 }
@@ -238,7 +238,7 @@
         /* 80% de 20px */
         height: 16px;
         /* 80% de 20px */
-        box-shadow: -8px 8px 0 #ebf1f6;
+        box-shadow: -8px 8px 0 #fff;
     }
 
     .card1 .imgbx::after {
@@ -248,7 +248,7 @@
         /* 80% de 20px */
         height: 16px;
         /* 80% de 20px */
-        box-shadow: -8px 8px 0 #ebf1f6;
+        box-shadow: -8px 8px 0 #fff;
     }
 
     .card1 .content {
@@ -261,9 +261,9 @@
         /* 80% de -80px */
         height: 64px;
         /* 80% de 80px */
-        border-top: 8px solid #ebf1f6;
+        border-top: 8px solid #fff;
         /* 80% de 10px */
-        border-right: 8px solid #ebf1f6;
+        border-right: 8px solid #fff;
         /* 80% de 10px */
         border-top-right-radius: 20px;
         /* 80% de 25px */
@@ -273,7 +273,7 @@
         width: 20px;
         /* 80% de 25px */
         height: 20px;
-        box-shadow: -8px -8px 0 #ebf1f6;
+        box-shadow: -8px -8px 0 #fff;
     }
 
     .card1 .content .btn::after {

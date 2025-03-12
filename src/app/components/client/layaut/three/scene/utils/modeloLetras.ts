@@ -43,7 +43,7 @@ export class ModeloLetras {
         pivot.add(this.model);
         
         // Ajustes adicionales de rotación y escala
-        pivot.rotation.set(0, -3, -1);
+        pivot.rotation.set(0, 0, 5);
         pivot.scale.set(15, 15, 15);
     
         // Agregar el grupo a la escena

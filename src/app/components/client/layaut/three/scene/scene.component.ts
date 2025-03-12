@@ -74,15 +74,15 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     this.sceneService.toggleSunAnimation();
   }
 
-  onViewModel(): void {
-    console.log('Botón Ver Modelo clickeado');
-    if (this.loadingVideo && this.loadingVideo.nativeElement) {
-      const videoEl = this.loadingVideo.nativeElement;
-      videoEl.pause(); // Pausa el video para evitar que se interrumpa la reproducción
-    }
-    this.showOverlay = false; // Luego quitas el overlay
+onViewModel(): void {
+  console.log('Botón Ver Modelo clickeado');
+  if (this.loadingVideo && this.loadingVideo.nativeElement) {
+    const videoEl = this.loadingVideo.nativeElement;
+    videoEl.pause(); // Pausa el video para evitar que se interrumpa la reproducción
   }
-  
+  this.showOverlay = false; // Luego quitas el overlay
+}
+
 
   onVideoEnded(): void {
     console.log('Video finalizado, reiniciando');

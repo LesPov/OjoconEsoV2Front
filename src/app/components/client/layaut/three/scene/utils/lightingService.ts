@@ -9,7 +9,7 @@ export class LightingService {
   private nightLight!: THREE.SpotLight;
   private lightGroup!: THREE.Group;
   private rotationSpeed: number = 0.005; // Velocidad de rotación para animación
-  private rotateSun: boolean = true;      // Flag para indicar si el sol rota
+  private rotateSun: boolean = false;      // Flag para indicar si el sol rota
 
   // Colores para día y atardecer/amanecer:
   private daySkyColor: THREE.Color = new THREE.Color(0xffffff);   // Cielo de día (blanco brillante)
