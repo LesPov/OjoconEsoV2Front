@@ -45,7 +45,7 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     });
 
     // Suscribirse al BehaviorSubject: si ya se emitió true, se asigna modelsLoaded
-    this.modelsLoadedSub = this.sceneService.modelsLoaded$.subscribe(loaded => {
+    this.modelsLoadedSub = this.sceneService.modelsLoaded$.subscribe(loaded => { 
       console.log('Estado de modelos cargados:', loaded);
       this.modelsLoaded = loaded;
       this.cdr.detectChanges();
@@ -76,14 +76,11 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
 
   onViewModel(): void {
     console.log('Botón Ver Modelo clickeado');
-    // Reinicia el video: carga, pone currentTime a 0 y lo reproduce
     if (this.loadingVideo && this.loadingVideo.nativeElement) {
       const videoEl = this.loadingVideo.nativeElement;
-      videoEl.currentTime = 0;
-      videoEl.load();
-      videoEl.play().catch(err => console.error('Error reproduciendo el video:', err));
+      videoEl.pause(); // Pausa el video para evitar que se interrumpa la reproducción
     }
-    this.showOverlay = false;
+    this.showOverlay = false; // Luego quitas el overlay
   }
   
 

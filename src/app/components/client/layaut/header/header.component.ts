@@ -24,6 +24,6 @@ export class HeaderComponent {
     // Si el dropdown está visible y el clic ocurre fuera del componente, lo ocultamos.
     if (this.dropdownVisible && !this.elementRef.nativeElement.contains(event.target)) {
       this.dropdownVisible = false;
-    }
+    } 
   }
 }

@@ -29,7 +29,7 @@ export const clientRouter: Routes = [
       },
       {
         path: '',
-        redirectTo: 'zonas',
+        redirectTo: 'dashboard',
         pathMatch: 'full'
       }
     ]

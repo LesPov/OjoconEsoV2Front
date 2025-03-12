@@ -1,3 +1,6 @@
+/* ================================
+   Estilos Base (Pantallas ≥ 400px de ancho)
+   ================================ */
 .container_zona {
     padding: 50px 10px;
     height: 100%;
@@ -29,6 +32,8 @@
     flex-direction: column;
     justify-content: space-between;
     z-index: 1;
+    margin: 0px 40px;
+    margin-bottom: 80px;
 }
 
 .card1 .imgbx {
@@ -117,20 +122,20 @@
     box-shadow: -10px 10px 0 #232949;
 }
 
-/* Definición de la animación de pulso */
 @keyframes pulse {
     0% {
         transform: scale(1);
     }
+
     50% {
         transform: scale(1.1);
     }
+
     100% {
         transform: scale(1);
     }
 }
 
-/* Botón con animación de pulso */
 .card1 .content .btn .button {
     background: #d5c934;
     padding: 10px 20px;
@@ -150,7 +155,6 @@
     margin-left: 10px;
 }
 
-/* Estilo del texto del botón (inspirado en Uiverse.io por elijahgummer) */
 .card1 .content .btn .button .txt {
     position: relative;
     font-family: sans-serif;
@@ -196,4 +200,131 @@
 .info-list ul li.campiamigos .icon,
 .info-list ul li.productos .icon {
     font-size: 1.2em;
+}
+
+/* ================================
+   Media Query (Pantallas < 400px de ancho)
+   Se escala la card al 80% de las medidas originales
+   ================================ */
+@media (max-width: 380px) {
+    .container_zona {
+        padding: 40px 10px;
+    }
+
+    .container_zona p {
+        font-size: 18px;
+    }
+
+    .cards {
+        gap: 16px;
+        margin-bottom: 80px;
+    }
+
+    .card1 {
+        width: 256px;
+        /* 80% de 320px */
+        height: 320px;
+        /* 80% de 400px */
+        margin: 0px 32px;
+    }
+
+    .card1 .imgbx {
+        height: 192px;
+        /* 80% de 240px */
+    }
+
+    .card1 .imgbx::before {
+        width: 16px;
+        /* 80% de 20px */
+        height: 16px;
+        /* 80% de 20px */
+        box-shadow: -8px 8px 0 #ebf1f6;
+    }
+
+    .card1 .imgbx::after {
+        bottom: 56px;
+        /* 80% de 70px */
+        width: 16px;
+        /* 80% de 20px */
+        height: 16px;
+        /* 80% de 20px */
+        box-shadow: -8px 8px 0 #ebf1f6;
+    }
+
+    .card1 .content {
+        height: 120px;
+        /* 80% de 150px */
+    }
+
+    .card1 .content .btn {
+        top: -64px;
+        /* 80% de -80px */
+        height: 64px;
+        /* 80% de 80px */
+        border-top: 8px solid #ebf1f6;
+        /* 80% de 10px */
+        border-right: 8px solid #ebf1f6;
+        /* 80% de 10px */
+        border-top-right-radius: 20px;
+        /* 80% de 25px */
+    }
+
+    .card1 .content .btn::before {
+        width: 20px;
+        /* 80% de 25px */
+        height: 20px;
+        box-shadow: -8px -8px 0 #ebf1f6;
+    }
+
+    .card1 .content .btn::after {
+        right: -20px;
+        /* 80% de -25px */
+        width: 20px;
+        height: 20px;
+        box-shadow: -8px 8px 0 #232949;
+    }
+
+    .card1 .content .btn .button {
+        padding: 8px 16px;
+        /* 80% de 10px 20px */
+        border-radius: 8px;
+        /* 80% de 10px */
+    }
+
+    .card1 .content .btn .button i {
+        font-size: 1.2em;
+    }
+
+    .card1 .content .btn .button .txt {
+        font-size: 14px;
+        /* 80% de 18px */
+        letter-spacing: 3px;
+        /* 80% de 4px */
+    }
+
+    .info-list ul {
+        margin: 8px 0 0 0;
+        gap: 8px;
+    }
+
+    .info-list ul li {
+        padding: 4px 8px;
+    }
+
+    .info-list ul li.name {
+        font-size: 1em;
+        /* 80% de 1.2em */
+    }
+
+    .info-list ul li.campiamigos,
+    .info-list ul li.productos {
+        font-size: 0.8em;
+        /* 80% de 0.9em */
+    }
+
+    .info-list ul li.campiamigos .icon,
+    .info-list ul li.productos .icon {
+        font-size: 1em;
+        /* 80% de 1.2em */
+    }
 }

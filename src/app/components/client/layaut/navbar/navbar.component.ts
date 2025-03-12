@@ -14,7 +14,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 export class NavbarComponent implements OnInit, AfterViewInit {
 
   navData = navbarData;
-  isSceneRoute: boolean = false;
+  isSceneRoute: boolean = false; 
 
   @ViewChildren('listItem') listItems!: QueryList<ElementRef<HTMLLIElement>>;
 

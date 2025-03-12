@@ -1,27 +1,38 @@
+/* Header de base: diseño mobile-first */
 .header {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* Distribuye de forma equilibrada los elementos */
   position: fixed;
   top: 0;
+  left: 50%;
+  transform: translateX(-50%);
   width: 100%;
+  /* Limita el ancho para mantener tu diseño de 400px */
   background: #ffffff;
-  gap: 75px;
-  padding: 10px;
-  align-items: center;
+  padding: 8px 30px;
   color: #232949;
-  justify-content: center;
   border-bottom-left-radius: 10%;
   border-bottom-right-radius: 10%;
   z-index: 100000;
   box-shadow: 0 3px 10px #00000040;
-
 }
 
+/* Ajuste de los íconos */
 .header i {
   font-size: 20px;
-
 }
 
-/* Contenedor para el icono y el dropdown */
+/* Título responsivo usando clamp para controlar el tamaño */
+.header h2 {
+  font-size: clamp(24px, 6vw, 36px);
+  /* Mínimo 24px, ideal según viewport, máximo 36px */
+  margin: 0;
+  text-align: center;
+}
+
+/* Contenedor para el ícono y el dropdown */
 .header-left {
   position: relative;
   display: flex;
@@ -30,7 +41,6 @@
 
 .header-left i {
   cursor: pointer;
-
 }
 
 /* Estilo para el dropdown */
@@ -71,4 +81,21 @@
 
 .dropdown ul li:hover {
   background-color: #f5f5f5;
+}
+
+/* Media Query para pantallas muy pequeñas (menos de 400px) */
+@media (max-width: 400px) {
+  .header {
+    padding: 8px 20px;
+  }
+
+  .header h2 {
+    font-size: clamp(20px, 6vw, 28px);
+    /* Se reduce ligeramente en pantallas pequeñas */
+  }
+
+  .header i {
+    font-size: 18px;
+    /* Ajusta también el tamaño de los íconos */
+  }
 }
