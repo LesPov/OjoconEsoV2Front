@@ -113,19 +113,19 @@
 
 /* Nueva regla: cuando se añade la clase 'scene-active', el borde se vuelve negro */
 .indicador.scene-active {
-    border: 6px solid black;
+    border: 6px solid #59a200;
     background: #59a200;
 
 }
 
 .indicador.scene-active::before {
 
-    box-shadow: 1px -7px 0px 0px #000000;
+    box-shadow: 1px -7px 0px 0px #59a200;
 }
 
 .indicador.scene-active::after {
 
-    box-shadow: -2px -7px 0px 0px #000000;
+    box-shadow: -2px -7px 0px 0px #59a200;
 }
 
 .navigation ul li:nth-child(1).active~.indicador {

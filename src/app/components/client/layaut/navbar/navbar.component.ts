@@ -21,10 +21,18 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   constructor(private router: Router) { }
 
   ngOnInit(): void {
-    // Escucha los cambios de ruta para actualizar isSceneRoute
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this.isSceneRoute = event.urlAfterRedirects.includes('/client/zonas/scene');
+        const currentUrl = event.urlAfterRedirects;
+        // Verificar si la URL actual pertenece a alguno de los links del navbar
+        const matched = this.navData.find(item => currentUrl.startsWith(item.routerLink));
+        if (matched) {
+          // Si se trata de la ruta de zonas/scene, actualizar el flag para estilos específicos
+          this.isSceneRoute = currentUrl.includes('/client/zonas/scene');
+        } else {
+          // Si no coincide con ninguno, reiniciamos la bandera
+          this.isSceneRoute = false;
+        }
       }
     });
   }
@@ -37,5 +45,11 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         liElement.classList.add('active');
       });
     });
+  }
+
+  // Método que retorna true si la ruta actual coincide con algún link del navbar
+  hasActiveNav(): boolean {
+    const currentUrl = this.router.url;
+    return this.navData.some(item => currentUrl.startsWith(item.routerLink));
   }
 }

@@ -1,7 +1,7 @@
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { authenticationRoutes } from './components/auth/routes/auth.router';
-import { clientRouter } from './components/client/services/clientRoutes';
+import { clientRouter } from './components/client/routes/clientRoutes';
 import { adminRouter } from './components/admin/services/adminRoutes';
 import { campesinoRouter } from './components/campesino/services/campesinoRouter';
 
@@ -10,9 +10,9 @@ export const routes: Routes = [
     ...clientRouter,
     ...adminRouter,
     ...campesinoRouter,
-    { path: 'bienvenida', loadComponent: () => import('../app/components/bienvenido/bienvenido.component').then(m => m.BiembenidoComponent) },
-    { path: '', redirectTo: '/bienvenida', pathMatch: 'full' },
-    { path: '**', redirectTo: '/bienvenida' },
+    { path: 'loading', loadComponent: () => import('./components/loading/loading.component').then(m => m.LoadingComponent) },
+    { path: '', redirectTo: '/loading', pathMatch: 'full' },
+    { path: '**', redirectTo: '/loading' },
 ];
 @NgModule({
     imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })],

@@ -33,7 +33,7 @@
     justify-content: space-between;
     z-index: 1;
     margin: 0px 40px;
-    margin-bottom: 80px;
+    margin-bottom: 100px;
 }
 
 .card1 .imgbx {
@@ -226,6 +226,7 @@
         height: 320px;
         /* 80% de 400px */
         margin: 0px 32px;
+        margin-bottom: 120px;
     }
 
     .card1 .imgbx {

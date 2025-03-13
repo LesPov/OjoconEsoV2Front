@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { BotInfoService } from '../../../middleware/botInfoCliente';
 
 @Component({
   selector: 'app-zone',
@@ -9,5 +10,12 @@ import { RouterModule } from '@angular/router';
 
 })
 export class ZoneComponent {
-
+  private infoZonaList: string[] = [
+    "Estas viendo zonas",
+   
+  ];
+  constructor(private botInfoService: BotInfoService) {}
+    ngOnInit(): void {
+      this.botInfoService.setInfoList(this.infoZonaList);
+    }
 }
