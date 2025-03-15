@@ -13,7 +13,7 @@ export class authService {
     private baseUrl: string = `${environment.endpoint}auth/user/`;
     private headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient) { }  
 
     register(user: auth): Observable<void> {
         return this.http.post<void>(`${this.baseUrl}register`, user, { headers: this.headers });

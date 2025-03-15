@@ -7,7 +7,7 @@
     <div class="dropdown" *ngIf="dropdownVisible">
       <ul>
         <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-          <a routerLink="/perfil">Perfil</a>
+          <a routerLink="profile" (click)="dropdownVisible=false">Perfil</a>
         </li>
         <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
           <a routerLink="/configuracion">Configuración</a>
@@ -16,9 +16,9 @@
           <a routerLink="/soporte">Soporte</a>
         </li>
         <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-          <a routerLink="/client/registerCampesino">Campiamigo</a>
+          <a routerLink="/client/registerCampesino" (click)="dropdownVisible=false">Campiamigo</a>
         </li>
-      </ul>
+      </ul> 
     </div>
   </div>
 

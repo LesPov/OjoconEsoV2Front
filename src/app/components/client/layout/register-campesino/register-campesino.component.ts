@@ -19,7 +19,7 @@ export class RegisterCampesinoComponent {
 
   constructor(private botInfoService: BotInfoService) {}
 
-  ngOnInit(): void {
+  ngOnInit(): void { 
     this.botInfoService.setInfoList(this.inforegisterList);
   }
 }

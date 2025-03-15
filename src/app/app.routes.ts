@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { authenticationRoutes } from './components/auth/routes/auth.router';
 import { clientRouter } from './components/client/routes/clientRoutes';
 import { adminRouter } from './components/admin/services/adminRoutes';
-import { campesinoRouter } from './components/campesino/services/campesinoRouter';
+import { campesinoRouter } from './components/campesino/routes/campesinoRouter';
 
 export const routes: Routes = [
     ...authenticationRoutes,
