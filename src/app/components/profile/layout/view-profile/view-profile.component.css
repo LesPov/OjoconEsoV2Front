@@ -150,3 +150,44 @@ select.input {
     background-position: right 16px center;
     /* Asegura que el texto no se superponga a la flecha */
 }
+.status-container {
+    margin: 20px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+  }
+  
+  .status-header {
+    background-color: #50b9ff;
+    color: #fff;
+    padding: 10px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
+  
+  .status-value {
+    padding: 15px;
+    font-size: 1.1rem;
+    color: #2c3e50;
+  }
+  
+  /* Estilos específicos según el estado */
+  .status-pending {
+    color: #e67e22; /* Naranja */
+    font-weight: bold;
+  }
+  
+  .status-registered {
+    color: #27ae60; /* Verde */
+    font-weight: bold;
+  }
+  
+  .status-rejected {
+    color: #c0392b; /* Rojo */
+    font-weight: bold;
+  }
+  

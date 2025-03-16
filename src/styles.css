@@ -8,3 +8,16 @@
     list-style: none;
     border: none;
   }
+
+  
+  /* Define alturas fijas para header y navbar */
+  app-header {
+    height: 42px; /* o la altura que tengas definida */
+    flex-shrink: 0;
+  }
+  
+  app-navbar {
+    height: 70px; /* según tu CSS */
+    flex-shrink: 0;
+  }
+  

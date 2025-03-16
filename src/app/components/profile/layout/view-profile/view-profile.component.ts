@@ -11,7 +11,7 @@ import { environment } from '../../../../../environments/environment';
 @Component({
   selector: 'app-view-profile',
   imports: [CommonModule, FormsModule],
-  templateUrl: './view-profile.component.html',
+  templateUrl: './view-profile.component.html', 
   styleUrls: ['./view-profile.component.css']
 })
 export class ViewProfileComponent {
