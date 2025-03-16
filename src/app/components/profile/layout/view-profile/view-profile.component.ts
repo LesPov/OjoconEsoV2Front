@@ -16,13 +16,12 @@ import { environment } from '../../../../../environments/environment';
 })
 export class ViewProfileComponent {
   previewUrl: string | ArrayBuffer | null = null;
-  isModified: boolean = false; // Indica si el formulario ha sido modificado
+  isModified: boolean = false;
 
   private infoperfilList: string[] = [
-    "Estás viendo tu perfilllllllllllllll"
+    "Estás viendo tu perfil"
   ];
 
-  // Modelo para el perfil
   profileData: Profile = {
     userId: 0,
     firstName: '',
@@ -31,7 +30,7 @@ export class ViewProfileComponent {
     identificationNumber: '',
     biography: '',
     direccion: '',
-    birthDate: '',  // Formato YYYY-MM-DD
+    birthDate: '',
     gender: 'Prefiero no declarar',
     profilePicture: '',
     status: 'pendiente',
@@ -39,8 +38,6 @@ export class ViewProfileComponent {
   };
 
   selectedFile: File | null = null;
-
-  // Opciones para selects
   identificationTypes = ['Cédula', 'Tarjeta de Identidad', 'DNI', 'Pasaporte', 'Licencia de Conducir', 'Otro'];
   genders = ['Mujer', 'Hombre', 'Otro género', 'Prefiero no declarar'];
 
@@ -56,7 +53,6 @@ export class ViewProfileComponent {
     this.getProfileData();
   }
 
-  // Consulta el perfil del usuario
   getProfileData(): void {
     this.profileService.getProfile().subscribe({
       next: (profile) => {
@@ -68,12 +64,10 @@ export class ViewProfileComponent {
     });
   }
 
-  // Marca el formulario como modificado
   setModified(): void {
     this.isModified = true;
   }
 
-  // Captura el archivo seleccionado para la imagen y genera vista previa
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
@@ -88,7 +82,6 @@ export class ViewProfileComponent {
     }
   }
 
-  // Retorna la URL de la imagen o una imagen por defecto
   getImageUrl(profilePicture?: string): string {
     if (!profilePicture) {
       return '../../../../../../assets/img/default-denuncia.png';
@@ -96,7 +89,6 @@ export class ViewProfileComponent {
     return `${environment.endpoint}uploads/client/profile/${profilePicture}`;
   }
 
-  // Valida que el número de identificación contenga solo dígitos y tenga más de 8 dígitos
   private isIdentificationNumberValid(): boolean {
     const regex = /^\d+$/;
     if (!regex.test(this.profileData.identificationNumber)) {
@@ -110,7 +102,6 @@ export class ViewProfileComponent {
     return true;
   }
 
-  // Valida que la fecha de nacimiento indique que el usuario tenga entre 18 y 80 años
   private isBirthDateValid(): boolean {
     const birthDate = new Date(this.profileData.birthDate!);
     if (isNaN(birthDate.getTime())) {
@@ -134,7 +125,6 @@ export class ViewProfileComponent {
     return true;
   }
 
-  // Valida los campos obligatorios del perfil, incluyendo las validaciones adicionales
   private areFieldsValid(): boolean {
     if (
       !this.profileData.firstName ||
@@ -156,7 +146,6 @@ export class ViewProfileComponent {
     return true;
   }
 
-  // Construye el objeto FormData con la información del perfil
   private buildProfileFormData(): FormData {
     const formData = new FormData();
     formData.append('firstName', this.profileData.firstName);
@@ -167,34 +156,47 @@ export class ViewProfileComponent {
     formData.append('direccion', this.profileData.direccion || '');
     formData.append('birthDate', this.profileData.birthDate || '');
     formData.append('gender', this.profileData.gender);
-    // Solo se adjunta la imagen si el usuario seleccionó una nueva
     if (this.selectedFile) {
       formData.append('profilePicture', this.selectedFile);
     }
     return formData;
   }
 
-  // Envía el formulario para actualizar el perfil
   updateProfile(): void {
-    // Verifica si hubo cambios en el formulario
     if (!this.isModified) {
       this.toastr.info('No se han realizado cambios para actualizar', 'Información');
       return;
     }
 
-    // Valida los campos obligatorios y las reglas de validación
     if (!this.areFieldsValid()) {
       return;
     }
 
-    // Construye el objeto FormData a partir de los datos del perfil
     const formData = this.buildProfileFormData();
 
-    // Llama al servicio para actualizar el perfil
     this.profileService.updateProfile(formData).subscribe({
       next: (res) => {
         this.toastr.success('Perfil actualizado exitosamente', 'Éxito');
-        this.router.navigate(['/client/dashboard']);
+        
+        // Redireccionamos según el rol guardado en localStorage
+        const userRole = localStorage.getItem('rol');
+        switch(userRole) {
+          case 'campesino':
+            this.router.navigate(['/campesino/dashboard']);
+            break;
+          case 'constructoracivil':
+            this.router.navigate(['/constructoracivil']);
+            break;
+          case 'admin':
+            this.router.navigate(['/admin/dashboard']);
+            break;
+          case 'client':
+            this.router.navigate(['/client/dashboard']);
+            break;
+          default:
+            this.router.navigate(['/']);
+            break;
+        }
       },
       error: (err) => {
         this.toastr.error(err.error.msg || 'Error al actualizar el perfil', 'Error');

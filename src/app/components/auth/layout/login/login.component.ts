@@ -17,11 +17,10 @@ export class LoginComponent implements OnInit {
   user: auth = {
     username: '',
     password: '',
-    email: '', // Se añade para cumplir con la interfaz
-    passwordorrandomPassword: '', // para permitir el uso de contraseña o contraseña aleatoria
+    email: '',
+    passwordorrandomPassword: '',
   };
   loading: boolean = false;
-  username: any;
 
   constructor(
     private toastr: ToastrService,
@@ -33,7 +32,6 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void { }
 
   loginUser() {
-    // Validamos que se hayan ingresado los datos requeridos
     if (!this.user.username || !this.user.passwordorrandomPassword) {
       this.toastr.error('Todos los campos son obligatorios', 'Error');
       return;
@@ -49,6 +47,10 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('token', response.token);
           if (response.userId) {
             localStorage.setItem('userId', response.userId);
+          }
+          // Guardamos el rol en localStorage
+          if (response.rol) {
+            localStorage.setItem('rol', response.rol);
           }
           // Si la contraseña es aleatoria, forzamos el cambio
           if (response.passwordorrandomPassword === 'randomPassword') {
@@ -69,7 +71,6 @@ export class LoginComponent implements OnInit {
                 this.router.navigate(['/constructoracivil']);
                 break;
               default:
-                // Si el rol no coincide con ninguno, podemos redirigir a una ruta por defecto
                 this.router.navigate(['/']);
                 break;
             }
@@ -82,5 +83,4 @@ export class LoginComponent implements OnInit {
       }
     );
   }
-  
 }

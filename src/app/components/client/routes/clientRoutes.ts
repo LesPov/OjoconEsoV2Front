@@ -1,9 +1,14 @@
+// clientRouter.ts
 import { Routes } from '@angular/router';
 import { registerCampesinoRouter } from './registerCampesino';
+import { RoleGuard } from '../../guard/role.guard';
 
 export const clientRouter: Routes = [
   {
     path: 'client',
+    canActivate: [RoleGuard],
+    canActivateChild: [RoleGuard],
+    data: { roles: ['client'] },
     loadComponent: () => import('../layout/body/body.component').then(m => m.BodyComponent),
     children: [
       ...registerCampesinoRouter,
@@ -15,7 +20,6 @@ export const clientRouter: Routes = [
         path: 'dashboard',
         loadComponent: () => import('../layout/dashboard/dashboard.component').then(m => m.DashboardComponent)
       },
-  
       {
         path: 'zonas',
         children: [
@@ -24,7 +28,6 @@ export const clientRouter: Routes = [
             loadComponent: () => import('../layout/three/zone/zone.component').then(m => m.ZoneComponent)
           },
           {
-            // Agrega el parámetro :zoneId
             path: 'scene/:zoneId',
             loadComponent: () => import('../layout/three/scene/scene.component').then(m => m.SceneComponent)
           }
@@ -34,7 +37,6 @@ export const clientRouter: Routes = [
         path: 'productos',
         loadComponent: () => import('../layout/three/market/market.component').then(m => m.MarketComponent)
       },
-   
       {
         path: '',
         redirectTo: 'dashboard',
@@ -43,4 +45,3 @@ export const clientRouter: Routes = [
     ]
   }
 ];
-

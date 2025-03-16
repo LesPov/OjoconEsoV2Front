@@ -1,0 +1,9 @@
+.body {
+    width: 100%;
+    position: relative;
+    top: 42px;
+    height: 80vh;
+    z-index: 1;
+    color: #000;
+}
+

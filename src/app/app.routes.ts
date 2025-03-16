@@ -1,3 +1,4 @@
+// app-routing.module.ts
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { authenticationRoutes } from './components/auth/routes/auth.router';
@@ -10,10 +11,15 @@ export const routes: Routes = [
     ...clientRouter,
     ...adminRouter,
     ...campesinoRouter,
+    {
+        path: 'unauthorized',
+        loadComponent: () => import('./components/utils/unauthorized/unauthorized.component').then(m => m.UnauthorizedComponent)
+    },
     { path: 'loading', loadComponent: () => import('./components/loading/loading.component').then(m => m.LoadingComponent) },
     { path: '', redirectTo: '/loading', pathMatch: 'full' },
     { path: '**', redirectTo: '/loading' },
 ];
+
 @NgModule({
     imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })],
     exports: [RouterModule]
