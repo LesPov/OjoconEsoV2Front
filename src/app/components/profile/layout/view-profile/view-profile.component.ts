@@ -7,11 +7,13 @@ import { ProfileService } from '../../services/profileServices';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../../../../environments/environment';
+import { jwtDecode } from 'jwt-decode';
+import { TokenPayload } from '../../../guard/autorization.guard';
 
 @Component({
   selector: 'app-view-profile',
   imports: [CommonModule, FormsModule],
-  templateUrl: './view-profile.component.html', 
+  templateUrl: './view-profile.component.html',
   styleUrls: ['./view-profile.component.css']
 })
 export class ViewProfileComponent {
@@ -46,7 +48,7 @@ export class ViewProfileComponent {
     private router: Router,
     private toastr: ToastrService,
     private botInfoService: BotInfoService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.botInfoService.setInfoList(this.infoperfilList);
@@ -171,31 +173,36 @@ export class ViewProfileComponent {
     if (!this.areFieldsValid()) {
       return;
     }
-
+  
     const formData = this.buildProfileFormData();
 
     this.profileService.updateProfile(formData).subscribe({
       next: (res) => {
         this.toastr.success('Perfil actualizado exitosamente', 'Éxito');
-        
-        // Redireccionamos según el rol guardado en localStorage
-        const userRole = localStorage.getItem('rol');
-        switch(userRole) {
-          case 'campesino':
-            this.router.navigate(['/campesino/dashboard']);
-            break;
-          case 'constructoracivil':
-            this.router.navigate(['/constructoracivil']);
-            break;
-          case 'admin':
-            this.router.navigate(['/admin/dashboard']);
-            break;
-          case 'client':
-            this.router.navigate(['/client/dashboard']);
-            break;
-          default:
-            this.router.navigate(['/']);
-            break;
+
+        // Obtiene el token del localStorage y decodifica para extraer el rol
+        const token = localStorage.getItem('token');
+        if (token) {
+          const payload: TokenPayload = jwtDecode(token);
+          switch (payload.rol) {
+            case 'campesino':
+              this.router.navigate(['/campesino/dashboard']);
+              break;
+            case 'constructoracivil':
+              this.router.navigate(['/constructoracivil']);
+              break;
+            case 'admin':
+              this.router.navigate(['/admin/dashboard']);
+              break;
+            case 'client':
+              this.router.navigate(['/client/dashboard']);
+              break;
+            default:
+              this.router.navigate(['/']);
+              break;
+          }
+        } else {
+          this.router.navigate(['/']);
         }
       },
       error: (err) => {

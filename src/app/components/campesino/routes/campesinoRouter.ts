@@ -1,14 +1,12 @@
-// campesinoRouter.ts
 import { Routes } from '@angular/router';
-import { RoleGuard } from '../../guard/role.guard';
+import { RoleGuard } from '../../guard/autorization.guard';
 
 export const campesinoRouter: Routes = [
   {
     path: 'campesino',
-    canActivate: [RoleGuard],
-    canActivateChild: [RoleGuard],
-    data: { roles: ['campesino'] },
     loadComponent: () => import('../layout/body/body.component').then(m => m.BodyComponent),
+    canActivate: [RoleGuard],
+    data: { allowedRoles: ['campesino'] },
     children: [
       {
         path: 'profile',
