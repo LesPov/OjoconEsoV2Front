@@ -88,7 +88,7 @@ export class UsersComponent implements OnInit {
     });
   
     if (filteredUsers.length === 0) {
-      this.toastr.error('No se encontraron resultados con los criterios ingresados', 'Error');
+      this.toastr.error('No se encontraron resultados con los campos ingresados', 'Error');
       // Si no se encontraron resultados, se mantiene la lista original de usuarios
       this.users = this.allUsers;
     } else {
