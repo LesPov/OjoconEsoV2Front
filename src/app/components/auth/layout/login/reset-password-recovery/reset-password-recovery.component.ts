@@ -16,7 +16,6 @@ export class ResetPasswordRecoveryComponent {
   randomPassword: string = '';
   newPassword: string = '';
   confirmNewPassword: string = '';
-  loading: boolean = false;
   token: string = '';
 
   constructor(
@@ -30,17 +29,17 @@ export class ResetPasswordRecoveryComponent {
     // Intenta obtener el token desde los query params o, si no existe, desde localStorage
     this.token = this.route.snapshot.queryParamMap.get('token') || localStorage.getItem('token') || '';
     this.usernameOrEmail = this.route.snapshot.queryParamMap.get('usernameOrEmail') ||
-                           this.route.snapshot.queryParamMap.get('username') || '';
-  
+      this.route.snapshot.queryParamMap.get('username') || '';
+
     if (!this.token) {
       this.toastr.error('No se recibió el token de recuperación', 'Error');
       return;
     }
-    
+
     console.log('Token recibido:', this.token);
   }
-  
-  
+
+
   resetPassword(form: NgForm): void {
     if (form.invalid) {
       this.toastr.error('Por favor, completa todos los campos requeridos', 'Error');
@@ -50,20 +49,21 @@ export class ResetPasswordRecoveryComponent {
       this.toastr.error('Las contraseñas no coinciden', 'Error');
       return;
     }
-    this.loading = true;
-    
+
     // Se llama al servicio, pasando el token del query param
     this.authService.resetPassword(this.usernameOrEmail, this.randomPassword, this.newPassword, this.token)
       .subscribe({
         next: () => {
-          this.loading = false;
           this.toastr.success('Contraseña actualizada correctamente', 'Éxito');
           this.router.navigate(['/auth/login']);
         },
         error: (err) => {
-          this.loading = false;
           this.toastr.error(err.error.msg || 'Error al restablecer la contraseña', 'Error');
         }
       });
+
+  }
+  goBack(): void {
+    this.router.navigate(['/auth/login']);
   }
 }  

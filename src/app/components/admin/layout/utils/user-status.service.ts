@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -12,15 +12,13 @@ import {jwtDecode} from 'jwt-decode';
 export class UserStatusService {
   public status$ = new BehaviorSubject<string>('Desactivado');
 
-  // Asegúrate de que estas rutas coincidan con las redirecciones reales:
   private allowedRoutes: { [role: string]: string[] } = {
-    admin: ['/admin'],      // Ej: /admin/dashboard, /admin/profile, etc.
-    client: ['/client'],    // Ahora se espera que los clientes naveguen a /client
-    campesino: ['/campesino'] 
+    admin: ['/admin'],
+    client: ['/client'],
+    campesino: ['/campesino']
   };
 
   constructor(private router: Router, private http: HttpClient) {
-    // Se suscribe a NavigationEnd para detectar cambios de ruta
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
@@ -31,6 +29,7 @@ export class UserStatusService {
   updateStatus(currentUrl: string): void {
     const token = localStorage.getItem('token');
     let userRole = '';
+
     if (token) {
       try {
         const payload: any = jwtDecode(token);
@@ -52,19 +51,42 @@ export class UserStatusService {
     if (this.status$.value !== newStatus) {
       this.status$.next(newStatus);
       this.updateStatusInBackend(newStatus);
+
+      if (newStatus === 'Desactivado' && currentUrl !== '/login') {
+        this.logoutUser();
+      }
     }
   }
 
   updateStatusInBackend(newStatus: string): void {
     const token = localStorage.getItem('token') || '';
+
+    if (!token) {
+      console.warn('No hay token disponible. Redirigiendo al login...');
+      this.logoutUser();
+      return;
+    }
+
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     });
+
     this.http.put(`${environment.endpoint}auth/user/updateStatus`, { status: newStatus }, { headers })
       .subscribe({
         next: (res) => console.log('Estado de autenticación actualizado en BD', res),
-        error: (err) => console.error('Error al actualizar el estado en BD', err)
+        error: (err) => {
+          console.error('Error al actualizar el estado en BD', err);
+          if (err.status === 401) {
+            console.warn('Token inválido o expirado. Cerrando sesión...');
+            this.logoutUser();
+          }
+        }
       });
+  }
+
+  logoutUser(): void {
+    localStorage.clear();
+    this.router.navigate(['/login']);
   }
 }

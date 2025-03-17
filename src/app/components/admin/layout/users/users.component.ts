@@ -18,7 +18,7 @@ export class UsersComponent implements OnInit, OnDestroy {
   users: AdminUser[] = [];
   showFilterModal: boolean = false;
   
-  // Variables de filtrado
+  // Variables de filtrado 
   filterId: string = '';
   filterUsername: string = '';
   filterEmail: string = '';
