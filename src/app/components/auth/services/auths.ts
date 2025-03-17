@@ -114,4 +114,14 @@ export class authService {
                 })
             );
     }
+   // authService.ts
+requestPasswordReset(usernameOrEmail: string): Observable<void> {
+    return this.http.post<void>(
+      `${this.baseUrl}login/forgotPassword`,
+      { usernameOrEmail },
+      { headers: this.headers }
+    );
+  }
+  
+    
 }

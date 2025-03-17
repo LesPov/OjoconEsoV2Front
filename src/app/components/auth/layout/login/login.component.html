@@ -4,34 +4,22 @@
       <h3>Iniciar Sesión</h3>
       <h6>Ingresa tus credenciales para continuar</h6>
     </div>
-  
+
     <div class="group">
       <label class="lbl">Correo Electrónico</label>
-      <input 
-        type="text" 
-        name="username" 
-        [(ngModel)]="user.username" 
-        class="input" 
-        placeholder="Introduce tu correo electrónico" 
-        required
-        autocomplete="username">
+      <input type="text" name="username" [(ngModel)]="user.username" class="input"
+        placeholder="Introduce tu correo electrónico" required autocomplete="username">
     </div>
-  
+
     <div class="group">
       <label class="lbl">Contraseña</label>
-      <input 
-        type="password" 
-        name="passwordorrandomPassword" 
-        [(ngModel)]="user.passwordorrandomPassword" 
-        class="input" 
-        placeholder="Introduce tu contraseña" 
-        required
-        autocomplete="current-password">
+      <input type="password" name="passwordorrandomPassword" [(ngModel)]="user.passwordorrandomPassword" class="input"
+        placeholder="Introduce tu contraseña" required autocomplete="current-password">
     </div>
-  
+
     <button type="submit" class="btn">Iniciar Sesión</button>
     <br>
-    <p><a routerLink="/login/passwordrecovery">¿Olvidaste tu contraseña?</a></p>
+    <p><a routerLink="/auth/passwordrecovery">¿Olvidaste tu contraseña?</a></p>
     <p>¿No tienes cuenta? <a routerLink="/auth/register">Regístrate</a></p>
   </div>
 </form>
