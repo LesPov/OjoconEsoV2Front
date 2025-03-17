@@ -112,7 +112,7 @@ export class LoginComponent implements OnInit {
 
     // Si se usó una contraseña aleatoria, forzamos el cambio de contraseña
     if (response.passwordorrandomPassword === 'randomPassword') {
-      this.router.navigate(['login/change-password'], { queryParams: { username: this.user.username } });
+      this.router.navigate(['/auth/resetPassword'], { queryParams: { username: this.user.username } });
     } else {
       // Redirige al usuario según su rol
       this.redirectBasedOnRole(response.rol);

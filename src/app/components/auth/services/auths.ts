@@ -123,5 +123,16 @@ requestPasswordReset(usernameOrEmail: string): Observable<void> {
     );
   }
   
-    
+  resetPassword(usernameOrEmail: string, randomPassword: string, newPassword: string, token: string): Observable<void> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.post<void>(
+      `${this.baseUrl}login/resetPassword`, 
+      { usernameOrEmail, randomPassword, newPassword }, 
+      { headers }
+    );
+  }
+  
 }
