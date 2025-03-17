@@ -26,7 +26,7 @@ export class authService {
     // Encabezados para las peticiones HTTP
     private headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-    constructor(private http: HttpClient) { }  
+    constructor(private http: HttpClient) { }
 
     /**
      * Registra un nuevo usuario.
@@ -114,25 +114,24 @@ export class authService {
                 })
             );
     }
-   // authService.ts
-requestPasswordReset(usernameOrEmail: string): Observable<void> {
-    return this.http.post<void>(
-      `${this.baseUrl}login/forgotPassword`,
-      { usernameOrEmail },
-      { headers: this.headers }
-    );
-  }
-  
-  resetPassword(usernameOrEmail: string, randomPassword: string, newPassword: string, token: string): Observable<void> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    });
-    return this.http.post<void>(
-      `${this.baseUrl}login/resetPassword`, 
-      { usernameOrEmail, randomPassword, newPassword }, 
-      { headers }
-    );
-  }
-  
+    // authService.ts
+    requestPasswordReset(usernameOrEmail: string): Observable<void> {
+        return this.http.post<void>(
+            `${this.baseUrl}login/forgotPassword`,
+            { usernameOrEmail },
+            { headers: this.headers }
+        );
+    }
+
+    resetPassword(usernameOrEmail: string, randomPassword: string, newPassword: string, token: string): Observable<void> {
+        // Se construye el header con el token recibido
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return this.http.post<void>(
+          `${this.baseUrl}login/resetPassword`,
+          { usernameOrEmail, randomPassword, newPassword },
+          { headers }
+        );
+      }
+      
+
 }

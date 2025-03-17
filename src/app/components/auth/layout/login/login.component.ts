@@ -112,11 +112,16 @@ export class LoginComponent implements OnInit {
 
     // Si se usó una contraseña aleatoria, forzamos el cambio de contraseña
     if (response.passwordorrandomPassword === 'randomPassword') {
-      this.router.navigate(['/auth/resetPassword'], { queryParams: { username: this.user.username } });
+      this.router.navigate(['/auth/resetPassword'], {
+        queryParams: {
+          username: this.user.username,
+          token: response.token  // Pasa el token aquí
+        }
+      });
     } else {
-      // Redirige al usuario según su rol
       this.redirectBasedOnRole(response.rol);
     }
+
   }
 
   /**
@@ -160,6 +165,9 @@ export class LoginComponent implements OnInit {
    * @param error Objeto HttpErrorResponse con los detalles del error.
    */
   private handleError(error: HttpErrorResponse): void {
-    this.toastr.error(error.error.msg, 'Error');
+    // Eliminamos el console.log para que no se imprima en la consola.
+    // console.log('Error recibido:', error.error);
+    const errorMsg = error.error.msg || error.error.errors || 'Ocurrió un error';
+    this.toastr.error(errorMsg, 'Error');
   }
-}
+}  

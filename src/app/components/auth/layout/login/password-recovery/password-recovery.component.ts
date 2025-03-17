@@ -8,11 +8,10 @@ import { FormsModule, NgForm } from '@angular/forms';
   selector: 'app-password-recovery',
   imports: [FormsModule],
   templateUrl: './password-recovery.component.html',
-  styleUrl: './password-recovery.component.css'
+  styleUrls: ['./password-recovery.component.css']
 })
 export class PasswordRecoveryComponent {
   usernameOrEmail: string = '';
-  loading: boolean = false;
 
   constructor(
     private authService: authService,
@@ -27,18 +26,20 @@ export class PasswordRecoveryComponent {
       this.toastr.error('Por favor ingresa tu correo o nombre de usuario', 'Error');
       return;
     }
-    this.loading = true;
     this.authService.requestPasswordReset(this.usernameOrEmail).subscribe({
       next: () => {
-        this.loading = false;
         this.toastr.success('Se ha enviado un correo para la recuperación de contraseña', 'Éxito');
-        // Puedes redirigir al usuario al login u otra pantalla
+        // Redirige al usuario al login
         this.router.navigate(['/login']);
       },
       error: (err) => {
-        this.loading = false;
         this.toastr.error(err.error.msg || 'Error al solicitar la recuperación de contraseña', 'Error');
       }
     });
+  }
+
+  // Función que redirige al login
+  goBack(): void {
+    this.router.navigate(['/auth/login']);
   }
 }
