@@ -91,18 +91,6 @@ export class ViewProfileComponent {
     return `${environment.endpoint}uploads/client/profile/${profilePicture}`;
   }
 
-  private isIdentificationNumberValid(): boolean {
-    const regex = /^\d+$/;
-    if (!regex.test(this.profileData.identificationNumber)) {
-      this.toastr.error('El número de identificación debe contener solo números', 'Error');
-      return false;
-    }
-    if (this.profileData.identificationNumber.length <= 7) {
-      this.toastr.error('El número de identificación debe tener más de 8 dígitos', 'Error');
-      return false;
-    }
-    return true;
-  }
 
   private isBirthDateValid(): boolean {
     const birthDate = new Date(this.profileData.birthDate!);
@@ -131,15 +119,13 @@ export class ViewProfileComponent {
     if (
       !this.profileData.firstName ||
       !this.profileData.lastName ||
-      !this.profileData.identificationNumber ||
-      !this.profileData.identificationType ||
+      // Eliminamos la validación de identificationNumber e identificationType:
+      //!this.profileData.identificationNumber ||
+      //!this.profileData.identificationType ||
       !this.profileData.birthDate ||
       !this.profileData.gender
     ) {
-      this.toastr.error('Todos los campos son obligatorios', 'Error');
-      return false;
-    }
-    if (!this.isIdentificationNumberValid()) {
+      this.toastr.error('Todos los campos obligatorios deben estar completos', 'Error');
       return false;
     }
     if (!this.isBirthDateValid()) {
@@ -147,7 +133,7 @@ export class ViewProfileComponent {
     }
     return true;
   }
-
+  
   private buildProfileFormData(): FormData {
     const formData = new FormData();
     formData.append('firstName', this.profileData.firstName);
@@ -173,11 +159,11 @@ export class ViewProfileComponent {
     if (!this.areFieldsValid()) {
       return;
     }
-  
+
     const formData = this.buildProfileFormData();
 
     this.profileService.updateProfile(formData).subscribe({
-      next: (res) => {
+      next: () => {
         this.toastr.success('Perfil actualizado exitosamente', 'Éxito');
 
         // Obtiene el token del localStorage y decodifica para extraer el rol

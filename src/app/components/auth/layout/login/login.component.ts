@@ -48,9 +48,7 @@ export class LoginComponent implements OnInit {
           if (response.userId) {
             localStorage.setItem('userId', response.userId);
           }
-          // Guardamos el rol en localStorage
-          localStorage.setItem('rol', response.rol);
-          
+        
           // Si la contraseña es aleatoria, forzamos el cambio
           if (response.passwordorrandomPassword === 'randomPassword') {
             this.router.navigate(['login/change-password'], { queryParams: { username: this.user.username } });
@@ -75,7 +73,6 @@ export class LoginComponent implements OnInit {
             }
           }
         }
-        
       },
       (error: HttpErrorResponse) => {
         this.loading = false;

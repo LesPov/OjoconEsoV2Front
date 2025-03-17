@@ -14,8 +14,8 @@ export class ZoneComponent {
     "Estas viendo zonas",
    
   ];
-  constructor(private botInfoService: BotInfoService) {}
+  constructor(private botInfoService: BotInfoService) {} 
     ngOnInit(): void {
       this.botInfoService.setInfoList(this.infoZonaList);
-    }
+    } 
 }

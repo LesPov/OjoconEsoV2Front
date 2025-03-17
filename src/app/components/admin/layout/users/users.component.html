@@ -1,0 +1,71 @@
+<div class="container_zona">
+    <p>Usuarios</p>
+    <!-- Botón de Filtrar sin borde, solo texto -->
+    <button class="filter-button" (click)="openFilterModal()">
+      Filtrar <i class='bx bx-filter'></i>
+    </button>
+  
+    <!-- Modal de filtrado -->
+    <div class="modal-overlay" *ngIf="showFilterModal">
+      <div class="modal-content">
+        <h2>Filtrar Usuarios</h2>
+        <div class="filter-field">
+          <label>ID:</label>
+          <input type="text" [(ngModel)]="filterId">
+        </div>
+        <div class="filter-field">
+          <label>Username:</label>
+          <input type="text" [(ngModel)]="filterUsername">
+        </div>
+        <div class="filter-field">
+          <label>Email:</label>
+          <input type="text" [(ngModel)]="filterEmail">
+        </div>
+        <div class="filter-field">
+          <label>Rol:</label>
+          <select [(ngModel)]="filterRol" class="input">
+            <option value="">Seleccione un rol</option>
+            <option value="client">Cliente</option>
+            <option value="campesino">Campesino</option>
+            <option value="admin">Administrador</option>
+            <option value="todos">Todos</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <!-- El botón "Aceptar" se activa solo si se ingresa algún criterio -->
+          <button (click)="applyFilter()" [disabled]="!isFilterValid()">Aceptar</button>
+          <button (click)="closeFilterModal()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Tarjetas de usuarios existentes -->
+    <div class="cards">
+      <div class="card1" *ngFor="let user of users">
+        <div class="imgbx">
+          <img [src]="getImageUrl(user.userProfile.profilePicture)" alt="Imagen de {{ user.username }}">
+          <!-- Badge de status en la esquina superior izquierda -->
+          <div class="status-badge" [ngClass]="getStatusClass(user.status)">
+            {{ user.status }}
+          </div>
+        </div>
+        <div class="content">
+          <span class="btn">
+            <button class="button">
+              <p class="txt">Ver</p>
+              <i class="bx bx-chevron-right bx-burst"></i>
+            </button>
+          </span>
+          <div class="info-list">
+            <ul>
+              <div class="user-id">{{ user.id }}</div>
+              <li class="name">Nombre: {{ user.username }}</li>
+              <li>Email: {{ user.email }}</li>
+              <li>Rol: {{ user.rol }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
