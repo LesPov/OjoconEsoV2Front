@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { environment } from '../../../../../environments/environment';
 import { AdminUser, AdminService } from '../../services/adminService';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { Subscription, interval } from 'rxjs';
 
 @Component({
   selector: 'app-users',
@@ -12,20 +13,34 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css']
 })
-export class UsersComponent implements OnInit {
+export class UsersComponent implements OnInit, OnDestroy {
   allUsers: AdminUser[] = [];
   users: AdminUser[] = [];
   showFilterModal: boolean = false;
-
-  // Variables para los filtros
+  
+  // Variables de filtrado
   filterId: string = '';
   filterUsername: string = '';
   filterEmail: string = '';
   filterRol: string = '';
 
+  private pollingSubscription!: Subscription;
+
   constructor(private adminService: AdminService, private toastr: ToastrService) { }
 
   ngOnInit(): void {
+    this.loadUsers();
+    // Configura polling cada 5 segundos
+    this.pollingSubscription = interval(5000).subscribe(() => this.loadUsers());
+  }
+
+  ngOnDestroy(): void {
+    if (this.pollingSubscription) {
+      this.pollingSubscription.unsubscribe();
+    }
+  }
+
+  loadUsers(): void {
     this.adminService.getAllUsers().subscribe({
       next: (data) => {
         this.allUsers = data;
@@ -44,17 +59,15 @@ export class UsersComponent implements OnInit {
     return `${environment.endpoint}uploads/client/profile/${profilePicture}`;
   }
 
-  // Abre el modal de filtrado
+  // Métodos para abrir y cerrar el modal de filtrado
   openFilterModal(): void {
     this.showFilterModal = true;
   }
-
-  // Cierra el modal de filtrado
   closeFilterModal(): void {
     this.showFilterModal = false;
   }
 
-  // Devuelve true si se ingresó al menos un criterio de filtro
+  // Verifica si se ingresó al menos un criterio de búsqueda
   isFilterValid(): boolean {
     return (
       this.filterId.trim() !== '' ||
@@ -64,7 +77,7 @@ export class UsersComponent implements OnInit {
     );
   }
 
-  // Aplica el filtrado y cierra el modal
+  // Aplica el filtro sobre la lista de usuarios
   applyFilter(): void {
     if (!this.isFilterValid()) {
       this.toastr.error('Debe ingresar al menos un criterio de búsqueda', 'Error');
@@ -89,7 +102,6 @@ export class UsersComponent implements OnInit {
   
     if (filteredUsers.length === 0) {
       this.toastr.error('No se encontraron resultados con los campos ingresados', 'Error');
-      // Si no se encontraron resultados, se mantiene la lista original de usuarios
       this.users = this.allUsers;
     } else {
       this.users = filteredUsers;
@@ -97,9 +109,8 @@ export class UsersComponent implements OnInit {
   
     this.closeFilterModal();
   }
-  
 
-  // Método para determinar la clase CSS según el status
+  // Devuelve la clase CSS según el status del usuario
   getStatusClass(status: string): string {
     if (!status) return 'status-default';
     switch (status.toLowerCase()) {

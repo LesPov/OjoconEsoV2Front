@@ -5,7 +5,7 @@ import { environment } from "../../../../environments/environment";
 import { Observable, tap } from "rxjs";
 import { LoginResponse } from "../interfaces/loginResponse";
 
-@Injectable({
+ @Injectable({
     providedIn: 'root',
 })
 export class authService {
@@ -19,7 +19,7 @@ export class authService {
         return this.http.post<void>(`${this.baseUrl}register`, user, { headers: this.headers });
     }
 
-    verifyEmail(username: string, verificationCode: string): Observable<any> {
+     verifyEmail(username: string, verificationCode: string): Observable<any> {
         return this.http.put<any>(`${this.baseUrl}verify/email`, { username, verificationCode }, { headers: this.headers });
     }
 

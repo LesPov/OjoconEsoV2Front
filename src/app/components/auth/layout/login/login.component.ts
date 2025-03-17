@@ -6,6 +6,7 @@ import { auth } from '../../interfaces/auth';
 import { authService } from '../../services/auths';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { UserStatusService } from '../../../admin/layout/utils/user-status.service';
 
 @Component({
   selector: 'app-login',
@@ -26,6 +27,8 @@ export class LoginComponent implements OnInit {
     private toastr: ToastrService,
     private authService: authService,
     private router: Router,
+    private userStatusService: UserStatusService,
+
     private route: ActivatedRoute
   ) { }
 
@@ -36,7 +39,7 @@ export class LoginComponent implements OnInit {
       this.toastr.error('Todos los campos son obligatorios', 'Error');
       return;
     }
-  
+
     this.loading = true;
     this.authService.login(this.user).subscribe(
       (response) => {
@@ -48,18 +51,20 @@ export class LoginComponent implements OnInit {
           if (response.userId) {
             localStorage.setItem('userId', response.userId);
           }
-        
+
           // Si la contraseña es aleatoria, forzamos el cambio
           if (response.passwordorrandomPassword === 'randomPassword') {
             this.router.navigate(['login/change-password'], { queryParams: { username: this.user.username } });
           } else {
             // Redireccionamos según el rol
-            switch(response.rol) {
+            switch (response.rol) {
               case 'admin':
                 this.router.navigate(['/admin/dashboard']);
+
                 break;
               case 'client':
                 this.router.navigate(['/client']);
+
                 break;
               case 'campesino':
                 this.router.navigate(['/campesino/dashboard']);
