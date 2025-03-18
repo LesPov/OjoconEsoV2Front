@@ -1,110 +1,126 @@
-<div class="user-summary-container" *ngIf=" user; else loadingTemplate">
+<div class="user-summary-container" *ngIf="user; else loadingTemplate">
     <!-- Botón para volver a la lista de usuarios -->
     <button type="button" class="back-btn" (click)="goBack()">
-        <i class="bx bx-left-arrow-alt"></i>
+      <i class="bx bx-left-arrow-alt"></i>
     </button>
     <div class="card">
-        <ul class="dropdown-list">
-            <!-- Opción: Información del Usuario -->
-            <li>
-                <details>
-                    <summary>Usuario</summary>
-                    <div class="content">
-                        <div class="card-header">
-                            <img [src]="getImageUrl(user.userProfile.profilePicture)"
-                                alt="Imagen de {{ user.username }}" class="profile-img">
-                            <!-- Se aplica la clase según el status utilizando getStatusClass -->
-                            <div class="status-badge" [ngClass]="getStatusClass(user.status)">
-                                {{ user.status }}
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <form>
-                                <div class="form-group">
-                                    <label for="id">ID</label>
-                                    <input type="text" id="id" class="form-control" [value]="user.id" readonly>
-                                </div>
-                                <div class="form-group">
-                                    <label for="username">Nombre</label>
-                                    <input type="text" id="username" class="form-control" [value]="user.username"
-                                        readonly>
-                                </div>
-                                <div class="form-group">
-                                    <label for="email">Email</label>
-                                    <input type="email" id="email" class="form-control" [value]="user.email" readonly>
-                                </div>
-                                <div class="form-group">
-                                    <label for="rol">Rol</label>
-                                    <input type="text" id="rol" class="form-control" [value]="user.rol" readonly>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </details>
-            </li>
-            <!-- Otras Opciones -->
-            <li>
-                <details>
-                    <summary>Perfil</summary>
-                    <div class="content">
-                        <div *ngIf="profile; else noProfile">
-                            <div class="form-group">
-                                <label>Nombre:</label>
-                                <input type="text" class="form-control" [value]="profile.firstName" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label>Apellido:</label>
-                                <input type="text" class="form-control" [value]="profile.lastName" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label>Tipo de Identificación:</label>
-                                <input type="text" class="form-control" [value]="profile.identificationType" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label>Número de Identificación:</label>
-                                <input type="text" class="form-control" [value]="profile.identificationNumber" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label>Dirección:</label>
-                                <input type="text" class="form-control" [value]="profile.direccion" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label>Biografía:</label>
-                                <textarea class="form-control" rows="3" readonly>{{ profile.biography }}</textarea>
-                            </div>
-                            <div class="form-group">
-                                <label>Fecha de Nacimiento:</label>
-                                <input type="text" class="form-control" [value]="profile.birthDate" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label>Género:</label>
-                                <input type="text" class="form-control" [value]="profile.gender" readonly>
-                            </div>
-                            <div class="form-group" *ngIf="profile.campiamigo !== undefined">
-                                <label>Campiamigo:</label>
-                                <input type="text" class="form-control" [value]="profile.campiamigo ? 'Sí' : 'No'"
-                                    readonly>
-                            </div>
-                        </div>
-                        <ng-template #noProfile>
-                            <p>No se pudo cargar la información del perfil.</p>
-                        </ng-template>
-                    </div>
-                </details>
-            </li>
-            <li>
-                <details>
-                    <summary>Opción 3</summary>
-                    <div class="content">
-                        Contenido correspondiente a la opción 3, ideal para desplegar información adicional.
-                    </div>
-                </details>
-            </li>
-        </ul>
+      <ul class="dropdown-list">
+        <!-- Opción: Información del Usuario -->
+        <li>
+          <details open>
+            <summary>Usuario</summary>
+            <div class="content">
+              <div class="card-header">
+                <!-- Muestra la imagen actual -->
+                <img [src]="getImageUrl(user.userProfile.profilePicture)"
+                     alt="Imagen de {{ user.username }}" class="profile-img">
+                <div class="status-badge" [ngClass]="getStatusClass(user.status)">
+                  {{ user.status }}
+                </div>
+              </div>
+              <div class="card-body">
+                <!-- Formulario para actualizar datos y la imagen -->
+                <form #userForm="ngForm" (ngSubmit)="updateUser()">
+                  <div class="form-group">
+                    <label for="id">ID</label>
+                    <input type="text" id="id" class="form-control" [value]="user.id" readonly>
+                  </div>
+                  <div class="form-group">
+                    <label for="username">Nombre</label>
+                    <input type="text" id="username" class="form-control" [(ngModel)]="user.username"
+                           (ngModelChange)="setModified()" name="username">
+                  </div>
+                  <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" class="form-control" [(ngModel)]="user.email"
+                           (ngModelChange)="setModified()" name="email">
+                  </div>
+                  <div class="form-group">
+                    <label for="phoneNumber">Teléfono</label>
+                    <input type="text" id="phoneNumber" class="form-control" [(ngModel)]="user.phoneNumber"
+                           (ngModelChange)="setModified()" name="phoneNumber">
+                  </div>
+                  <div class="form-group">
+                    <label for="rol">Rol</label>
+                    <input type="text" id="rol" class="form-control" [(ngModel)]="user.rol"
+                           (ngModelChange)="setModified()" name="rol">
+                  </div>
+                  <!-- Input para cambiar la imagen (oculto) -->
+                  <div class="form-group">
+                    <label class="btn-upload" for="profilePicture">
+                      <i class='bx bx-image-add'></i>
+                    </label>
+                    <input type="file" id="profilePicture" (change)="onFileSelected($event)" style="display: none;">
+                  </div>
+                  <button type="submit" class="btn" [disabled]="!isModified">Actualizar Perfil</button>
+                </form>
+              </div>
+            </div>
+          </details>
+        </li>
+        <!-- Otras Opciones (por ejemplo, información del perfil) -->
+        <li>
+          <details>
+            <summary>Perfil</summary>
+            <div class="content">
+              <div *ngIf="profile; else noProfile">
+                <div class="form-group">
+                  <label>Nombre:</label>
+                  <input type="text" class="form-control" [value]="profile.firstName" readonly>
+                </div>
+                <div class="form-group">
+                  <label>Apellido:</label>
+                  <input type="text" class="form-control" [value]="profile.lastName" readonly>
+                </div>
+                <div class="form-group">
+                  <label>Tipo de Identificación:</label>
+                  <input type="text" class="form-control" [value]="profile.identificationType" readonly>
+                </div>
+                <div class="form-group">
+                  <label>Número de Identificación:</label>
+                  <input type="text" class="form-control" [value]="profile.identificationNumber" readonly>
+                </div>
+                <div class="form-group">
+                  <label>Dirección:</label>
+                  <input type="text" class="form-control" [value]="profile.direccion" readonly>
+                </div>
+                <div class="form-group">
+                  <label>Biografía:</label>
+                  <textarea class="form-control" rows="3" readonly>{{ profile.biography }}</textarea>
+                </div>
+                <div class="form-group">
+                  <label>Fecha de Nacimiento:</label>
+                  <input type="text" class="form-control" [value]="profile.birthDate" readonly>
+                </div>
+                <div class="form-group">
+                  <label>Género:</label>
+                  <input type="text" class="form-control" [value]="profile.gender" readonly>
+                </div>
+                <div class="form-group" *ngIf="profile.campiamigo !== undefined">
+                  <label>Campiamigo:</label>
+                  <input type="text" class="form-control" [value]="profile.campiamigo ? 'Sí' : 'No'" readonly>
+                </div>
+              </div>
+              <ng-template #noProfile>
+                <p>No se pudo cargar la información del perfil.</p>
+              </ng-template>
+            </div>
+          </details>
+        </li>
+        <li>
+          <details>
+            <summary>Opción 3</summary>
+            <div class="content">
+              Contenido correspondiente a la opción 3, ideal para desplegar información adicional.
+            </div>
+          </details>
+        </li>
+      </ul>
     </div>
-</div>
-
-<ng-template #loadingTemplate>
+  </div>
+  
+  <ng-template #loadingTemplate>
     <div class="loading">Cargando información...</div>
     <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
-</ng-template>
+  </ng-template>
+  

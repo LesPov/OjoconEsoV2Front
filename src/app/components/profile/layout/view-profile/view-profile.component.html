@@ -8,7 +8,7 @@
     <div class="group image-preview-group">
       <!-- Contenedor fijo para la imagen -->
       <div class="image-container">
-        <!-- Imagen actual o vista previa -->
+        <!-- Imagen actual o vista previa --> 
         <img *ngIf="previewUrl || profileData.profilePicture"
           [src]="previewUrl ? previewUrl : getImageUrl(profileData.profilePicture || '')" alt="Foto de perfil" />
       </div>

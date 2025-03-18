@@ -6,6 +6,7 @@ import { environment } from '../../../../environments/environment';
 export interface AdminUser {
     id: number;
     username: string;
+    phoneNumber?: string; // Nuevo campo opcional
     email: string;
     rol: string;
     status: 'Activado' | 'Desactivado';
@@ -30,5 +31,10 @@ export class AdminService {
         return this.http.get<AdminUser[]>(`${this.baseUrl}usersProfile`, { headers });
     }
 
-
+    // Método para actualizar los datos del usuario usando FormData
+    updateUser(userId: number, formData: FormData): Observable<AdminUser> {
+        const token = localStorage.getItem('token') || '';
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return this.http.put<AdminUser>(`${this.baseUrl}user/${userId}`, formData, { headers });
+    }
 }

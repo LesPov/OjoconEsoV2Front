@@ -29,7 +29,7 @@ export class ViewProfileComponent {
     firstName: '',
     lastName: '',
     identificationType: '',
-    identificationNumber: '',
+    identificationNumber: '', 
     biography: '',
     direccion: '',
     birthDate: '',
