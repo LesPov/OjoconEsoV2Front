@@ -8,16 +8,25 @@ import { Profile } from '../interfaces/profileInterfaces';
   providedIn: 'root',
 })
 export class ProfileService {
-  // Base URL para las rutas de perfil
+  // Base URL para las rutas de perfil (ajusta según tu API)
   private baseUrl: string = `${environment.endpoint}user/profile/`;
 
   constructor(private http: HttpClient) {}
+ // Nuevo método para obtener el perfil por ID
 
-  // Consulta el perfil del usuario (GET /client/me)
+  // Consulta el perfil del usuario autenticado
   getProfile(): Observable<Profile> {
     const token = localStorage.getItem('token') || '';
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get<Profile>(`${this.baseUrl}client/me`, { headers });
+  }
+
+  // Nuevo método: consulta el perfil de un usuario específico por su ID
+  getProfileByUserId(userId: number): Observable<Profile> {
+    const token = localStorage.getItem('token') || '';
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    // Ejemplo: la URL puede ser algo como `${baseUrl}${userId}`
+    return this.http.get<Profile>(`${this.baseUrl}${userId}`, { headers });
   }
 
   // Actualiza el perfil completo (PUT /client/update-profile)
@@ -28,7 +37,6 @@ export class ProfileService {
   }
 
   // Actualiza el perfil mínimo (PUT /client/update-minimal-profile)
-  // Enviamos un objeto JSON ya que no se requiere subir archivos
   updateMinimalProfile(data: {  
     identificationType: string;
     identificationNumber: string;

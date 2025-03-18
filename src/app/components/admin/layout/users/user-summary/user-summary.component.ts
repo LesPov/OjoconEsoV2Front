@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { environment } from '../../../../../../environments/environment';
 import { AdminUser, AdminService } from '../../../services/adminService';
@@ -19,14 +19,30 @@ import { ToastrService } from 'ngx-toastr';
 export class UserSummaryComponent implements OnInit, OnDestroy {
   userId!: number;
   user!: AdminUser | undefined;
+  originalUser!: AdminUser;
   errorMessage: string = '';
   profile!: Profile | null;
+  originalProfile!: Profile;
+
+  // Para actualizar la imagen del usuario
   selectedFile: File | null = null;
+  // Para actualizar la imagen del perfil (opcional)
+  selectedProfileFile: File | null = null;
+
+  // Banderas que indican si hubo cambios
   isModified: boolean = false;
+  isProfileModified: boolean = false;
+
+  // Opciones de rol
+  roles: string[] = ['client', 'admin', 'campesino', 'constructoracivil'];
 
   statusSubscription!: Subscription;
   pollingSubscription!: Subscription;
   profileSubscription!: Subscription;
+
+  // Referencias a elementos <details>
+  @ViewChild('userDetails') userDetails!: ElementRef;
+  @ViewChild('profileDetails') profileDetails!: ElementRef;
 
   constructor(
     private router: Router,
@@ -40,6 +56,7 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userId = Number(this.route.snapshot.paramMap.get('id'));
     this.loadUser();
+    // Usamos el nuevo método para obtener el perfil por ID del usuario consultado
     this.loadProfile();
 
     this.statusSubscription = this.userStatusService.status$.subscribe(status => {
@@ -52,21 +69,53 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.statusSubscription) this.statusSubscription.unsubscribe();
-    if (this.pollingSubscription) this.pollingSubscription.unsubscribe();
-    if (this.profileSubscription) this.profileSubscription.unsubscribe();
+    this.statusSubscription?.unsubscribe();
+    this.pollingSubscription?.unsubscribe();
+    this.profileSubscription?.unsubscribe();
   }
 
-  setModified(): void {
-    this.isModified = true;
+  // Detección de cambios en el formulario de usuario
+  checkUserModified(): void {
+    if (!this.user || !this.originalUser) {
+      this.isModified = false;
+      return;
+    }
+    this.isModified =
+      this.user.username !== this.originalUser.username ||
+      this.user.email !== this.originalUser.email ||
+      this.user.phoneNumber !== this.originalUser.phoneNumber ||
+      this.user.rol !== this.originalUser.rol ||
+      !!this.selectedFile;
   }
 
+  // Detección de cambios en el formulario de perfil
+  checkProfileModified(): void {
+    if (!this.profile || !this.originalProfile) {
+      this.isProfileModified = false;
+      return;
+    }
+    this.isProfileModified =
+      this.profile.firstName !== this.originalProfile.firstName ||
+      this.profile.lastName !== this.originalProfile.lastName ||
+      this.profile.identificationType !== this.originalProfile.identificationType ||
+      this.profile.identificationNumber !== this.originalProfile.identificationNumber ||
+      this.profile.biography !== this.originalProfile.biography ||
+      this.profile.direccion !== this.originalProfile.direccion ||
+      this.profile.birthDate !== this.originalProfile.birthDate ||
+      this.profile.gender !== this.originalProfile.gender ||
+      this.profile.campiamigo !== this.originalProfile.campiamigo ||
+      !!this.selectedProfileFile;
+  }
+
+  // Carga de datos del usuario (cuenta)
   loadUser(): void {
     this.adminService.getAllUsers().subscribe({
       next: (data: AdminUser[]) => {
         this.user = data.find(u => u.id === this.userId);
         if (!this.user) {
           this.errorMessage = 'Usuario no encontrado.';
+        } else {
+          this.originalUser = JSON.parse(JSON.stringify(this.user));
         }
       },
       error: (err) => {
@@ -76,13 +125,31 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Carga del perfil usando el método getProfileByUserIdAdmin del servicio de perfil
   loadProfile(): void {
-    this.profileSubscription = this.profileService.getProfile().subscribe({
+    this.profileSubscription = this.adminService.getProfileByUserIdAdmin(this.userId).subscribe({
       next: (profileData: Profile) => {
         this.profile = profileData;
+        this.originalProfile = JSON.parse(JSON.stringify(profileData));
       },
       error: (err) => {
         console.error("Error al cargar perfil:", err);
+        // Si no se encuentra el perfil (por ejemplo, 404), asignamos un perfil vacío
+        if (err.status === 404) {
+          this.profile = {
+            userId: this.userId,
+            firstName: '',
+            lastName: '',
+            identificationType: '',
+            identificationNumber: '',
+            biography: '',
+            direccion: '',
+            gender: 'Prefiero no declarar',
+            profilePicture: '',
+            campiamigo: false
+          };
+          this.originalProfile = JSON.parse(JSON.stringify(this.profile));
+        }
       }
     });
   }
@@ -101,11 +168,12 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Manejo de archivo para actualizar imagen del usuario
   onFileSelected(event: Event): void {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files.length > 0) {
       this.selectedFile = target.files[0];
-      this.isModified = true;
+      this.checkUserModified();
     }
   }
 
@@ -115,7 +183,6 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
       formData.append('username', this.user.username);
       formData.append('email', this.user.email);
       formData.append('rol', this.user.rol);
-      // Incluimos el phoneNumber si existe
       if (this.user.phoneNumber) {
         formData.append('phoneNumber', this.user.phoneNumber);
       }
@@ -132,7 +199,7 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
       return;
     }
     if (!this.user) return;
-    
+
     const formData = this.buildUserFormData();
     this.adminService.updateUser(this.user.id, formData).subscribe({
       next: () => {
@@ -140,6 +207,7 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
         this.isModified = false;
         this.selectedFile = null;
         this.loadUser();
+        this.userDetails.nativeElement.removeAttribute('open');
       },
       error: (err) => {
         this.toastr.error(err.error.msg || 'Error al actualizar el usuario', 'Error');
@@ -153,6 +221,60 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
       return '../../../../../../assets/img/default-user.png';
     }
     return `${environment.endpoint}uploads/client/profile/${profilePicture}`;
+  }
+
+  // Manejo de archivo para actualizar imagen del perfil
+  onProfileFileSelected(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files.length > 0) {
+      this.selectedProfileFile = target.files[0];
+      this.checkProfileModified();
+    }
+  }
+
+  buildProfileFormData(): FormData {
+    const formData = new FormData();
+    if (this.profile) {
+      formData.append('firstName', this.profile.firstName);
+      formData.append('lastName', this.profile.lastName);
+      formData.append('identificationType', this.profile.identificationType);
+      formData.append('identificationNumber', this.profile.identificationNumber);
+      formData.append('biography', this.profile.biography);
+      formData.append('direccion', this.profile.direccion);
+      if (this.profile.birthDate) {
+        formData.append('birthDate', this.profile.birthDate);
+      }
+      formData.append('gender', this.profile.gender);
+      formData.append('campiamigo', this.profile.campiamigo ? 'true' : 'false');
+      if (this.selectedProfileFile) {
+        formData.append('profilePicture', this.selectedProfileFile);
+      }
+    }
+    return formData;
+  }
+
+  updateProfileData(): void {
+    if (!this.profile) return;
+    const formData = this.buildProfileFormData();
+    this.profileService.updateProfile(formData).subscribe({
+      next: () => {
+        this.toastr.success('Perfil actualizado exitosamente', 'Éxito');
+        this.selectedProfileFile = null;
+        this.isProfileModified = false;
+        this.loadProfile();
+        this.profileDetails.nativeElement.removeAttribute('open');
+      },
+      error: (err) => {
+        this.toastr.error(err.error.msg || 'Error al actualizar el perfil', 'Error');
+      }
+    });
+  }
+
+  getProfileImageUrl(profilePicture: string): string {
+    if (!profilePicture) {
+      return '../../../../../../assets/img/default-user.png';
+    }
+    return `${environment.endpoint}uploads/profile/${profilePicture}`;
   }
 
   goBack(): void {
