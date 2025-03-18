@@ -29,7 +29,7 @@ export class ProfileService {
 
   // Actualiza el perfil mínimo (PUT /client/update-minimal-profile)
   // Enviamos un objeto JSON ya que no se requiere subir archivos
-  updateMinimalProfile(data: { 
+  updateMinimalProfile(data: {  
     identificationType: string;
     identificationNumber: string;
     direccion: string;

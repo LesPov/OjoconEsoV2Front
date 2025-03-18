@@ -102,6 +102,7 @@ details[open] summary::after {
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     background-color: #fff;
     overflow: hidden;
+    margin-bottom: 100px;
 }
 
 .card-header {

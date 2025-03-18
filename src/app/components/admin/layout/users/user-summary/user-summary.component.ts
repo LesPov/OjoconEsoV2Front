@@ -6,6 +6,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription, interval } from 'rxjs';
 import { UserStatusService } from '../../utils/user-status.service';
+import { Profile } from '../../../../profile/interfaces/profileInterfaces';
+import { ProfileService } from '../../../../profile/services/profileServices';
+// Importa el ProfileService y la interface Profile
+
 
 @Component({
   selector: 'app-user-summary',
@@ -17,23 +21,31 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
   userId!: number;
   user!: AdminUser | undefined;
   errorMessage: string = '';
-  
+  profile!: Profile | null;
+
   // Suscripción a los cambios del status global
   statusSubscription!: Subscription;
   // Polling para actualizar el status (o información del usuario) en tiempo real
   pollingSubscription!: Subscription;
 
+  // Suscripción para el perfil
+  profileSubscription!: Subscription;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private adminService: AdminService,
-    private userStatusService: UserStatusService
+    private userStatusService: UserStatusService,
+    private profileService: ProfileService // Inyecta el servicio de perfil
   ) { }
 
   ngOnInit(): void {
     // Extraer el id de la URL
     this.userId = Number(this.route.snapshot.paramMap.get('id'));
     this.loadUser();
+
+    // Cargar el perfil del usuario
+    this.loadProfile();
 
     // Suscribirse a los cambios de status global
     this.statusSubscription = this.userStatusService.status$.subscribe(status => {
@@ -54,6 +66,9 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
     if (this.pollingSubscription) {
       this.pollingSubscription.unsubscribe();
     }
+    if (this.profileSubscription) {
+      this.profileSubscription.unsubscribe();
+    }
   }
 
   // Carga completa de la información del usuario (se usa una sola vez al inicio)
@@ -72,9 +87,21 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Método para cargar el perfil del usuario
+  loadProfile(): void {
+    this.profileSubscription = this.profileService.getProfile().subscribe({
+      next: (profileData: Profile) => {
+        this.profile = profileData;
+      },
+      error: (err) => {
+        console.error("Error al cargar perfil:", err);
+        // Puedes definir un mensaje de error específico para el perfil
+      }
+    });
+  }
+
   // Método de polling: consulta nuevamente el status del usuario
   updateUserStatus(): void {
-    // Llamamos a getAllUsers y actualizamos solo el status del usuario actual
     this.adminService.getAllUsers().subscribe({
       next: (data: AdminUser[]) => {
         const updatedUser = data.find(u => u.id === this.userId);

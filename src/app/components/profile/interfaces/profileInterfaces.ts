@@ -12,4 +12,4 @@ export interface Profile {
     status?: 'pendiente' | 'aprobado' | 'rechazado';
     campiamigo?: boolean; // Este campo se usará para identificar si el usuario aceptó ser "Campiamigo"
   }
-  
+   
