@@ -10,7 +10,7 @@ export const navbarData = [
     {
       routerLink: '/admin/users',
       icon: 'bx bxs-user-detail',
-      label: 'Inicio'
+      label: 'Usuarios'
     },
   ];
   

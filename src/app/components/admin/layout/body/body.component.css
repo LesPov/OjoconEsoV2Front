@@ -1,9 +1,14 @@
 .body {
-    width: 100%;
+    width: 98%;
     position: relative;
     top: 42px;
     height: 80vh;
     z-index: 1;
     color: #000;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
+body::-webkit-scrollbar {
+    display: none;
+}

@@ -1,0 +1,200 @@
+.dropdown-list {
+    list-style: none;
+    padding: 0;
+    max-width: 500px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fff;
+    overflow: hidden;
+}
+
+/* Estilos para cada item de la lista */
+.dropdown-list li {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* Último item sin borde */
+.dropdown-list li:last-child {
+    border-bottom: none;
+}
+
+/* Estilo para el título de cada opción */
+summary {
+    position: relative;
+    background-color: #f7f7f7;
+    cursor: pointer;
+    padding: 15px 20px;
+    font-size: 18px;
+    user-select: none;
+    outline: none;
+    transition: background-color 0.3s;
+    /* Remueve el marcador de lista (Firefox) */
+    list-style: none;
+}
+
+summary:hover {
+    background-color: #eaeaea;
+}
+
+/* Oculta el marcador predeterminado en navegadores basados en WebKit */
+summary::-webkit-details-marker {
+    display: none;
+}
+
+/* Oculta el marcador predeterminado en Firefox */
+summary::marker {
+    display: none;
+}
+
+/* Flecha a la derecha utilizando pseudo-elemento */
+summary::after {
+    content: '\25BA';
+    /* Flecha a la derecha */
+    position: absolute;
+    right: 20px;
+    font-size: 16px;
+    transition: transform 0.3s;
+}
+
+/* Cuando se expande la opción, la flecha rota */
+details[open] summary::after {
+    transform: rotate(90deg);
+}
+
+/* Contenido de cada opción desplegable */
+.content {
+    padding: 15px 20px;
+    background-color: #fff;
+    border-top: 1px solid #f0f0f0;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/* user-summary.component.css */
+.user-summary-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 15px;
+}
+
+.back-btn {
+    background: transparent;
+    cursor: pointer;
+    color: #2c3e50;
+    top: -5px;
+    left: 20px;
+    position: absolute;
+}
+
+.back-btn i {
+    margin-right: 0.5rem;
+    font-size: 2.5rem;
+}
+
+.card {
+    margin-top: 30px;
+    list-style: none;
+    padding: 0;
+    max-width: 500px;
+    border-radius: 8px;
+    box-shadow: -1px 6px 5px 0px rgb(0 0 0 / 22%);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fff;
+    overflow: hidden;
+}
+
+.card-header {
+    position: relative;
+    text-align: center;
+    background-color: #f7f7f7;
+    padding: 20px;
+}
+
+.profile-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #fff;
+}
+
+.status-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.status-activado {
+    background-color: green;
+}
+
+.status-desactivado {
+    background-color: red;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.loading,
+.error {
+    text-align: center;
+    padding: 20px;
+    font-size: 1.2em;
+}
+.status-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-weight: bold;
+    color: #fff;
+  }
+  
+  .status-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-weight: bold;
+    color: #fff;
+  }
+  
+  .status-activado {
+    background-color: green;
+  }
+  
+  .status-desactivado {
+    background-color: red;
+  }
+  
+  .status-default {
+    background-color: gray;
+  }
+  
+  /* Otros estilos que ya tienes definidos */
+  

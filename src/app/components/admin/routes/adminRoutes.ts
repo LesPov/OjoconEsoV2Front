@@ -22,6 +22,10 @@ export const adminRouter: Routes = [
                 loadComponent: () => import('../layout/users/users.component').then(m => m.UsersComponent)
             },
             {
+                path: 'user-summary/:id',
+                loadComponent: () => import('../layout/users/user-summary/user-summary.component').then(m => m.UserSummaryComponent)
+            },
+            {
                 path: '',
                 redirectTo: 'dashboard',
                 pathMatch: 'full'
