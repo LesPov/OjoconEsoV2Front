@@ -9,6 +9,7 @@ import { UserStatusService } from '../../utils/user-status.service';
 import { Profile } from '../../../../profile/interfaces/profileInterfaces';
 import { ProfileService } from '../../../../profile/services/profileServices';
 import { ToastrService } from 'ngx-toastr';
+import { SocioDemographicData } from '../../../middleware/interfaces/socioDemographic.interface';
 
 @Component({
   selector: 'app-user-summary',
@@ -23,13 +24,14 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
   errorMessage: string = '';
   profile!: Profile | null;
   originalProfile!: Profile;
+  socioData!: SocioDemographicData | null; // Información sociodemográfica
 
   // Para actualizar la imagen del usuario
   selectedFile: File | null = null;
   // Para actualizar la imagen del perfil (opcional)
   selectedProfileFile: File | null = null;
 
-  // Banderas que indican si hubo cambios
+  // Banderas que indican si hubo cambios (usuario y perfil)
   isModified: boolean = false;
   isProfileModified: boolean = false;
 
@@ -39,10 +41,12 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
   statusSubscription!: Subscription;
   pollingSubscription!: Subscription;
   profileSubscription!: Subscription;
+  socioDataSubscription!: Subscription; // Suscripción para sociodemográfica
 
   // Referencias a elementos <details>
   @ViewChild('userDetails') userDetails!: ElementRef;
   @ViewChild('profileDetails') profileDetails!: ElementRef;
+  @ViewChild('socioDetails') socioDetails!: ElementRef; // Para la sección sociodemográfica
 
   constructor(
     private router: Router,
@@ -56,8 +60,8 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userId = Number(this.route.snapshot.paramMap.get('id'));
     this.loadUser();
-    // Usamos el nuevo método para obtener el perfil por ID del usuario consultado
     this.loadProfile();
+    // Se llamará a loadSocioData() desde loadUser() si el rol es campesino
 
     this.statusSubscription = this.userStatusService.status$.subscribe(status => {
       if (this.user) {
@@ -72,9 +76,24 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
     this.statusSubscription?.unsubscribe();
     this.pollingSubscription?.unsubscribe();
     this.profileSubscription?.unsubscribe();
+    this.socioDataSubscription?.unsubscribe();
   }
 
-  // Detección de cambios en el formulario de usuario
+  // Método para cargar la información sociodemográfica (se llama solo si el usuario es campesino)
+  loadSocioData(): void {
+    this.socioDataSubscription = this.adminService.getSociodemographicData(this.userId).subscribe({
+      next: (data: SocioDemographicData) => {
+        this.socioData = data;
+      },
+      error: (err) => {
+        console.error("Error al cargar la información sociodemográfica:", err);
+        if (err.status === 404) {
+          this.socioData = null;
+        }
+      }
+    });
+  }
+
   checkUserModified(): void {
     if (!this.user || !this.originalUser) {
       this.isModified = false;
@@ -88,7 +107,6 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
       !!this.selectedFile;
   }
 
-  // Detección de cambios en el formulario de perfil
   checkProfileModified(): void {
     if (!this.profile || !this.originalProfile) {
       this.isProfileModified = false;
@@ -107,7 +125,6 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
       !!this.selectedProfileFile;
   }
 
-  // Carga de datos del usuario (cuenta)
   loadUser(): void {
     this.adminService.getAllUsers().subscribe({
       next: (data: AdminUser[]) => {
@@ -116,6 +133,12 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
           this.errorMessage = 'Usuario no encontrado.';
         } else {
           this.originalUser = JSON.parse(JSON.stringify(this.user));
+          // Si el rol es "campesino", carga la información sociodemográfica; de lo contrario, asigna null.
+          if (this.user.rol?.toLowerCase() === 'campesino') {
+            this.loadSocioData();
+          } else {
+            this.socioData = null;
+          }
         }
       },
       error: (err) => {
@@ -125,7 +148,6 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Carga del perfil usando el método getProfileByUserIdAdmin del servicio de perfil
   loadProfile(): void {
     this.profileSubscription = this.adminService.getProfileByUserIdAdmin(this.userId).subscribe({
       next: (profileData: Profile) => {
@@ -134,7 +156,6 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error("Error al cargar perfil:", err);
-        // Si no se encuentra el perfil (por ejemplo, 404), asignamos un perfil vacío
         if (err.status === 404) {
           this.profile = {
             userId: this.userId,
@@ -168,7 +189,6 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Manejo de archivo para actualizar imagen del usuario
   onFileSelected(event: Event): void {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files.length > 0) {
@@ -207,6 +227,7 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
         this.isModified = false;
         this.selectedFile = null;
         this.loadUser();
+        // Cierra el detalle manualmente (sin el atributo "open")
         this.userDetails.nativeElement.removeAttribute('open');
       },
       error: (err) => {
@@ -223,7 +244,6 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
     return `${environment.endpoint}uploads/client/profile/${profilePicture}`;
   }
 
-  // Manejo de archivo para actualizar imagen del perfil
   onProfileFileSelected(event: Event): void {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files.length > 0) {

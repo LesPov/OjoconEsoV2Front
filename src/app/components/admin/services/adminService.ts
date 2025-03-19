@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Profile } from '../../profile/interfaces/profileInterfaces';
+import { SocioDemographicData } from '../middleware/interfaces/socioDemographic.interface';
 
 export interface AdminUser {
     id: number;
@@ -20,6 +21,9 @@ export interface AdminUser {
     providedIn: 'root',
 })
 export class AdminService {
+  updateSociodemographicData(userId: number, formData: FormData) {
+    throw new Error('Method not implemented.');
+  }
     // Asegúrate de que el endpoint esté configurado correctamente
     private baseUrl: string = `${environment.endpoint}user/admin/`;
 
@@ -46,4 +50,11 @@ export class AdminService {
       // Se espera que la ruta completa sea: /user/admin/profile/:id
       return this.http.get<Profile>(`${this.baseUrl}profile/${userId}`, { headers });
     }
+    
+  // NUEVO: Método para obtener la información sociodemográfica de un usuario por ID
+  getSociodemographicData(userId: number): Observable<SocioDemographicData> {
+    const token = localStorage.getItem('token') || '';
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<SocioDemographicData>(`${this.baseUrl}sociodemographic/${userId}`, { headers });
+  }
 }
