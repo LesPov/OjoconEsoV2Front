@@ -1,3 +1,4 @@
+// src/app/admin/components/user-summary/user-summary.component.ts
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { environment } from '../../../../../../environments/environment';
@@ -31,9 +32,10 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
   // Para actualizar la imagen del perfil (opcional)
   selectedProfileFile: File | null = null;
 
-  // Banderas que indican si hubo cambios (usuario y perfil)
+  // Banderas para detectar cambios
   isModified: boolean = false;
   isProfileModified: boolean = false;
+  isSocioModified: boolean = false; // Para cambios en la sociodemográfica
 
   // Opciones de rol
   roles: string[] = ['client', 'admin', 'campesino', 'constructoracivil'];
@@ -61,7 +63,7 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
     this.userId = Number(this.route.snapshot.paramMap.get('id'));
     this.loadUser();
     this.loadProfile();
-    // Se llamará a loadSocioData() desde loadUser() si el rol es campesino
+    // loadSocioData() se invoca en loadUser() si el usuario es campesino
 
     this.statusSubscription = this.userStatusService.status$.subscribe(status => {
       if (this.user) {
@@ -79,11 +81,12 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
     this.socioDataSubscription?.unsubscribe();
   }
 
-  // Método para cargar la información sociodemográfica (se llama solo si el usuario es campesino)
+  // Método para cargar la información sociodemográfica (solo si el usuario es campesino)
   loadSocioData(): void {
     this.socioDataSubscription = this.adminService.getSociodemographicData(this.userId).subscribe({
       next: (data: SocioDemographicData) => {
         this.socioData = data;
+        this.isSocioModified = false;
       },
       error: (err) => {
         console.error("Error al cargar la información sociodemográfica:", err);
@@ -94,6 +97,59 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Detección de cambios en la sección sociodemográfica
+  checkSocioModified(): void {
+    // Aquí podrías comparar con un objeto original si lo guardas; por ahora, se marca como modificado
+    this.isSocioModified = true;
+  }
+
+  // Construye FormData con la información sociodemográfica
+  buildSocioFormData(): FormData {
+    const formData = new FormData();
+    if (this.socioData) {
+      formData.append('residenceYears', String(this.socioData.residenceYears));
+      formData.append('residenceMonths', String(this.socioData.residenceMonths));
+      formData.append('selfIdentification', this.socioData.selfIdentification);
+      if (this.socioData.otherIdentification) {
+        formData.append('otherIdentification', this.socioData.otherIdentification);
+      }
+      formData.append('ethnicGroup', this.socioData.ethnicGroup);
+      if (this.socioData.ethnicGroupDetail) {
+        formData.append('ethnicGroupDetail', this.socioData.ethnicGroupDetail);
+      }
+      formData.append('hasDisability', String(this.socioData.hasDisability));
+      if (this.socioData.disabilityDetail) {
+        formData.append('disabilityDetail', this.socioData.disabilityDetail);
+      }
+      formData.append('conflictVictim', String(this.socioData.conflictVictim));
+      formData.append('educationLevel', this.socioData.educationLevel);
+    }
+    return formData;
+  }
+
+  // Método para actualizar la información sociodemográfica
+  updateSocioData(): void {
+    if (!this.isSocioModified) {
+      this.toastr.info('No se han realizado cambios en la información sociodemográfica', 'Información');
+      return;
+    }
+    if (!this.user || !this.socioData) return; // Verificamos que socioData no sea null
+    
+    this.adminService.updateSociodemographicData(this.user.id, this.socioData).subscribe({
+      next: (updatedData) => {
+        this.toastr.success('Información sociodemográfica actualizada exitosamente', 'Éxito');
+        this.isSocioModified = false;
+        this.loadSocioData();
+        this.socioDetails.nativeElement.removeAttribute('open');
+      },
+      error: (err) => {
+        this.toastr.error(err.error.msg || 'Error al actualizar la información sociodemográfica', 'Error');
+      }
+    });
+  }
+  
+
+  // Métodos para usuario y perfil (ya existentes)...
   checkUserModified(): void {
     if (!this.user || !this.originalUser) {
       this.isModified = false;
@@ -133,7 +189,6 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
           this.errorMessage = 'Usuario no encontrado.';
         } else {
           this.originalUser = JSON.parse(JSON.stringify(this.user));
-          // Si el rol es "campesino", carga la información sociodemográfica; de lo contrario, asigna null.
           if (this.user.rol?.toLowerCase() === 'campesino') {
             this.loadSocioData();
           } else {
@@ -227,7 +282,6 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
         this.isModified = false;
         this.selectedFile = null;
         this.loadUser();
-        // Cierra el detalle manualmente (sin el atributo "open")
         this.userDetails.nativeElement.removeAttribute('open');
       },
       error: (err) => {
