@@ -1,16 +1,14 @@
-// src/app/admin/components/user-summary/user-summary.component.ts
+// Importa el servicio AdminService y el ProfileService si lo requieres; en este ejemplo usaremos AdminService para ambos.
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { environment } from '../../../../../../environments/environment';
-import { AdminUser, AdminService } from '../../../services/adminService';
+import { AdminUser, AdminService } from '../../../services/admin.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Subscription, interval } from 'rxjs';
-import { UserStatusService } from '../../utils/user-status.service';
-import { Profile } from '../../../../profile/interfaces/profileInterfaces';
-import { ProfileService } from '../../../../profile/services/profileServices';
 import { ToastrService } from 'ngx-toastr';
-import { SocioDemographicData } from '../../../middleware/interfaces/socioDemographic.interface';
+import { Profile } from '../../../../auth/layout/profile/interfaces/profileInterfaces';
+import { interval, Subscription } from 'rxjs';
+import { UserStatusService } from '../../../services/user-status.service';
 
 @Component({
   selector: 'app-user-summary',
@@ -25,7 +23,6 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
   errorMessage: string = '';
   profile!: Profile | null;
   originalProfile!: Profile;
-  socioData!: SocioDemographicData | null; // Información sociodemográfica
 
   // Para actualizar la imagen del usuario
   selectedFile: File | null = null;
@@ -35,35 +32,30 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
   // Banderas para detectar cambios
   isModified: boolean = false;
   isProfileModified: boolean = false;
-  isSocioModified: boolean = false; // Para cambios en la sociodemográfica
 
   // Opciones de rol
-  roles: string[] = ['client', 'admin', 'campesino', 'constructoracivil'];
+  roles: string[] = ['user', 'admin', 'supervisor'];
 
   statusSubscription!: Subscription;
   pollingSubscription!: Subscription;
   profileSubscription!: Subscription;
-  socioDataSubscription!: Subscription; // Suscripción para sociodemográfica
 
   // Referencias a elementos <details>
   @ViewChild('userDetails') userDetails!: ElementRef;
   @ViewChild('profileDetails') profileDetails!: ElementRef;
-  @ViewChild('socioDetails') socioDetails!: ElementRef; // Para la sección sociodemográfica
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private adminService: AdminService,
     private userStatusService: UserStatusService,
-    private toastr: ToastrService,
-    private profileService: ProfileService
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
     this.userId = Number(this.route.snapshot.paramMap.get('id'));
     this.loadUser();
     this.loadProfile();
-    // loadSocioData() se invoca en loadUser() si el usuario es campesino
 
     this.statusSubscription = this.userStatusService.status$.subscribe(status => {
       if (this.user) {
@@ -78,78 +70,9 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
     this.statusSubscription?.unsubscribe();
     this.pollingSubscription?.unsubscribe();
     this.profileSubscription?.unsubscribe();
-    this.socioDataSubscription?.unsubscribe();
   }
 
-  // Método para cargar la información sociodemográfica (solo si el usuario es campesino)
-  loadSocioData(): void {
-    this.socioDataSubscription = this.adminService.getSociodemographicData(this.userId).subscribe({
-      next: (data: SocioDemographicData) => {
-        this.socioData = data;
-        this.isSocioModified = false;
-      },
-      error: (err) => {
-        console.error("Error al cargar la información sociodemográfica:", err);
-        if (err.status === 404) {
-          this.socioData = null;
-        }
-      }
-    });
-  }
-
-  // Detección de cambios en la sección sociodemográfica
-  checkSocioModified(): void {
-    // Aquí podrías comparar con un objeto original si lo guardas; por ahora, se marca como modificado
-    this.isSocioModified = true;
-  }
-
-  // Construye FormData con la información sociodemográfica
-  buildSocioFormData(): FormData {
-    const formData = new FormData();
-    if (this.socioData) {
-      formData.append('residenceYears', String(this.socioData.residenceYears));
-      formData.append('residenceMonths', String(this.socioData.residenceMonths));
-      formData.append('selfIdentification', this.socioData.selfIdentification);
-      if (this.socioData.otherIdentification) {
-        formData.append('otherIdentification', this.socioData.otherIdentification);
-      }
-      formData.append('ethnicGroup', this.socioData.ethnicGroup);
-      if (this.socioData.ethnicGroupDetail) {
-        formData.append('ethnicGroupDetail', this.socioData.ethnicGroupDetail);
-      }
-      formData.append('hasDisability', String(this.socioData.hasDisability));
-      if (this.socioData.disabilityDetail) {
-        formData.append('disabilityDetail', this.socioData.disabilityDetail);
-      }
-      formData.append('conflictVictim', String(this.socioData.conflictVictim));
-      formData.append('educationLevel', this.socioData.educationLevel);
-    }
-    return formData;
-  }
-
-  // Método para actualizar la información sociodemográfica
-  updateSocioData(): void {
-    if (!this.isSocioModified) {
-      this.toastr.info('No se han realizado cambios en la información sociodemográfica', 'Información');
-      return;
-    }
-    if (!this.user || !this.socioData) return; // Verificamos que socioData no sea null
-    
-    this.adminService.updateSociodemographicData(this.user.id, this.socioData).subscribe({
-      next: (updatedData) => {
-        this.toastr.success('Información sociodemográfica actualizada exitosamente', 'Éxito');
-        this.isSocioModified = false;
-        this.loadSocioData();
-        this.socioDetails.nativeElement.removeAttribute('open');
-      },
-      error: (err) => {
-        this.toastr.error(err.error.msg || 'Error al actualizar la información sociodemográfica', 'Error');
-      }
-    });
-  }
-  
-
-  // Métodos para usuario y perfil (ya existentes)...
+  // Métodos para detectar cambios
   checkUserModified(): void {
     if (!this.user || !this.originalUser) {
       this.isModified = false;
@@ -189,11 +112,6 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
           this.errorMessage = 'Usuario no encontrado.';
         } else {
           this.originalUser = JSON.parse(JSON.stringify(this.user));
-          if (this.user.rol?.toLowerCase() === 'campesino') {
-            this.loadSocioData();
-          } else {
-            this.socioData = null;
-          }
         }
       },
       error: (err) => {
@@ -278,7 +196,7 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
     const formData = this.buildUserFormData();
     this.adminService.updateUser(this.user.id, formData).subscribe({
       next: () => {
-        this.toastr.success('Perfil actualizado exitosamente', 'Éxito');
+        this.toastr.success('Cuenta actualizada exitosamente', 'Éxito');
         this.isModified = false;
         this.selectedFile = null;
         this.loadUser();
@@ -306,34 +224,35 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
     }
   }
 
-  buildProfileFormData(): FormData {
-    const formData = new FormData();
-    if (this.profile) {
-      formData.append('firstName', this.profile.firstName);
-      formData.append('lastName', this.profile.lastName);
-      formData.append('identificationType', this.profile.identificationType);
-      formData.append('identificationNumber', this.profile.identificationNumber);
-      formData.append('biography', this.profile.biography);
-      formData.append('direccion', this.profile.direccion);
-      if (this.profile.birthDate) {
-        formData.append('birthDate', this.profile.birthDate);
-      }
-      formData.append('gender', this.profile.gender);
-      formData.append('campiamigo', this.profile.campiamigo ? 'true' : 'false');
-      if (this.selectedProfileFile) {
-        formData.append('profilePicture', this.selectedProfileFile);
-      }
+  buildProfileJSON(): Profile {
+    if (!this.profile) {
+      throw new Error('No hay datos de perfil');
     }
-    return formData;
+    return {
+      userId: this.userId,
+      firstName: this.profile.firstName,
+      lastName: this.profile.lastName,
+      identificationType: this.profile.identificationType,
+      identificationNumber: this.profile.identificationNumber,
+      biography: this.profile.biography,
+      direccion: this.profile.direccion,
+      birthDate: this.profile.birthDate,
+      gender: this.profile.gender,
+      profilePicture: this.profile.profilePicture,
+      campiamigo: this.profile.campiamigo
+    };
   }
 
   updateProfileData(): void {
     if (!this.profile) return;
-    const formData = this.buildProfileFormData();
-    this.profileService.updateProfile(formData).subscribe({
+    if (!this.isProfileModified) {
+      this.toastr.info('No se han realizado cambios en el perfil', 'Información');
+      return;
+    }
+    const profileJSON = this.buildProfileJSON(); 
+    this.adminService.updateProfile(this.userId, profileJSON).subscribe({
       next: () => {
         this.toastr.success('Perfil actualizado exitosamente', 'Éxito');
-        this.selectedProfileFile = null;
         this.isProfileModified = false;
         this.loadProfile();
         this.profileDetails.nativeElement.removeAttribute('open');
@@ -343,6 +262,7 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
       }
     });
   }
+  
 
   getProfileImageUrl(profilePicture: string): string {
     if (!profilePicture) {

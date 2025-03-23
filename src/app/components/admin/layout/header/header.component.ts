@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { BotInfoService } from '../../../client/middleware/botInfoCliente';
+import { BotInfoService } from '../utils/botInfoCliente';
 
 @Component({
   selector: 'app-header',

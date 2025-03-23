@@ -21,7 +21,7 @@
 }
 
 /* Estilo para botón deshabilitado */
-.btn:disabled {
+.btn:disabled { 
     background: grey;
     cursor: not-allowed;
 }

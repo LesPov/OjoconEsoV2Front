@@ -9,5 +9,4 @@ export const authenticationRoutes: Routes = [
     { path: 'auth/number', loadComponent: () => import('../layout/number/number.component').then(m => m.NumberComponent) },
     { path: 'auth/verifynumber', loadComponent: () => import('../layout/verify-number/verify-number.component').then(m => m.VerifyNumberComponent) },
     // Ruta por defecto para redirigir a login
-    { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
 ];

@@ -11,7 +11,7 @@ export const adminRouter: Routes = [
         children: [
             {
                 path: 'profile',
-                loadComponent: () => import('../../profile/layout/view-profile/view-profile.component').then(m => m.ViewProfileComponent)
+                loadComponent: () => import('../../auth/layout/profile/layout/view-profile/view-profile.component').then(m => m.ViewProfileComponent)
             },
             {
                 path: 'dashboard',
@@ -20,6 +20,10 @@ export const adminRouter: Routes = [
             {
                 path: 'users',
                 loadComponent: () => import('../layout/users/users.component').then(m => m.UsersComponent)
+            },
+            {
+                path: 'denuncias',
+                loadComponent: () => import('../layout/denuncias/denuncias.component').then(m => m.DenunciasComponent)
             },
             {
                 path: 'user-summary/:id',

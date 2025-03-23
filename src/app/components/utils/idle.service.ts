@@ -2,7 +2,7 @@ import { Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { fromEvent, merge, Subscription, timer } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
-import { UserStatusService } from '../admin/layout/utils/user-status.service';
+import { UserStatusService } from '../admin/services/user-status.service';
 
 @Injectable({
   providedIn: 'root'

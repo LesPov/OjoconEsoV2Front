@@ -5,7 +5,7 @@
     height: 80vh;
     z-index: 1;
     color: #000;
-    scrollbar-width: none;
+    scrollbar-width: none; 
     -ms-overflow-style: none;
 }
 

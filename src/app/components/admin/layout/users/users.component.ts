@@ -1,10 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { environment } from '../../../../../environments/environment';
-import { AdminUser, AdminService } from '../../services/adminService';
+import { AdminUser, AdminService } from '../../services/admin.service';
 import { Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription, interval } from 'rxjs';
-import { BotInfoService } from '../../../client/middleware/botInfoCliente';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -12,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 // Agrega estas importaciones (si aún no existen)
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { BotInfoService } from '../utils/botInfoCliente';
 
 @Component({
   selector: 'app-users',
@@ -52,7 +52,7 @@ export class UsersComponent implements OnInit, OnDestroy {
     this.botInfoService.setInfoList(["Estas viendo admin usuarios"]);
     // Realiza polling cada 1 segundo para actualizar la lista (ajusta el intervalo según necesidad)
     this.pollingSubscription = interval(1000).subscribe(() => this.loadUsers());
-  }
+  } 
 
   ngOnDestroy(): void {
     if (this.pollingSubscription) {

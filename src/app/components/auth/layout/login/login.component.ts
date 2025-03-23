@@ -19,7 +19,7 @@ import { auth } from '../../interfaces/auth';
 import { authService } from '../../services/auths';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { UserStatusService } from '../../../admin/layout/utils/user-status.service';
+import { UserStatusService } from '../../../admin/services/user-status.service';
 
 @Component({
   selector: 'app-login',
@@ -144,14 +144,11 @@ export class LoginComponent implements OnInit {
       case 'admin':
         this.router.navigate(['/admin/dashboard']);
         break;
-      case 'client':
-        this.router.navigate(['/client']);
+      case 'user':
+        this.router.navigate(['/user/dashboard']);
         break;
       case 'campesino':
-        this.router.navigate(['/campesino/dashboard']);
-        break;
-      case 'constructoracivil':
-        this.router.navigate(['/constructoracivil']);
+        this.router.navigate(['/supervisor/dashboard']);
         break;
       default:
         this.router.navigate(['/']);

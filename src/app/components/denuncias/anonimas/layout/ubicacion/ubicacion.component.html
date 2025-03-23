@@ -1,0 +1,24 @@
+<div class="container">
+    <div class="map-container">
+      <!-- Input para mostrar la dirección -->
+      <div class="ubicacion-input">
+        <label for="direccion">Ubicación seleccionada:</label>
+        <input type="text" id="direccion" [value]="direccionSeleccionada" readonly [class.loading]="isLoading"
+               placeholder="Selecciona un punto en el mapa">
+      </div>
+    
+      <!-- Botón para centrar en la ubicación actual -->
+      <button class="btn-ubicacion-actual" (click)="centrarEnUbicacionActual()">
+        <i class='bx bx-target-lock bx-tada'></i>
+      </button>
+    
+      <!-- Contenedor del mapa -->
+      <div id="map"></div>
+    </div>
+  </div>
+  
+  <app-navbar
+    [currentStep]="currentStep" [totalSteps]="totalSteps" [showStepCounter]="true"
+    [denunciaSeleccionada]="selectedLocation !== null" (continuar)="handleContinue()">
+  </app-navbar> 
+  

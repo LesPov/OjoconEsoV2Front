@@ -18,7 +18,7 @@ export class RegisterComponent implements OnInit {
     username: '',
     password: '',
     email: '',
-    rol: 'client', // Valor por defecto para rol
+    rol: 'user', // Valor por defecto para rol
   };
   confirmPassword: string = '';
 

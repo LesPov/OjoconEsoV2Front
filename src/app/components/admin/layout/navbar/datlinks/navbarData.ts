@@ -12,5 +12,10 @@ export const navbarData = [
       icon: 'bx bxs-user-detail',
       label: 'Usuarios'
     },
+    {
+      routerLink: '/admin/denuncias',
+      icon: 'bx bxs-file',
+      label: 'Denuncias'
+    }
   ];
   

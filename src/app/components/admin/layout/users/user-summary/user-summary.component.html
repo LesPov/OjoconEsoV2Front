@@ -70,10 +70,18 @@
               </div>
               <div class="group">
                 <label class="lbl" for="identificationType">Tipo de Identificación</label>
-                <input type="text" id="identificationType" class="input"
-                       [(ngModel)]="profile.identificationType" (ngModelChange)="checkProfileModified()"
-                       name="identificationType" required>
+                <select id="identificationType" class="input" [(ngModel)]="profile.identificationType"
+                        (ngModelChange)="checkProfileModified()" name="identificationType" required>
+                        <option value="Tarjeta de Identidad">Tarjeta de Identidad</option>
+                        <option value="Cédula">Cédula</option>
+                        <option value="DNI">DNI</option>
+                        <option value="Pasaporte">Pasaporte</option>
+                        <option value="Licencia de Conducir">Licencia de Conducir</option>
+                        <option value="Otro">Otro</option>
+                        
+                </select>
               </div>
+            
               <div class="group">
                 <label class="lbl" for="identificationNumber">Número de Identificación</label>
                 <input type="text" id="identificationNumber" class="input"
@@ -90,7 +98,7 @@
                 <textarea id="biography" class="input" rows="3" [(ngModel)]="profile.biography"
                           (ngModelChange)="checkProfileModified()" name="biography"></textarea>
               </div>
-              <div class="group">
+              <div class="group"> 
                 <label class="lbl" for="birthDate">Fecha de Nacimiento</label>
                 <input type="date" id="birthDate" class="input" [(ngModel)]="profile.birthDate"
                        (ngModelChange)="checkProfileModified()" name="birthDate">
@@ -118,117 +126,7 @@
       <br>
   
       <!-- Sección: Información Sociodemográfica y Familia (solo para campesino) -->
-      <div *ngIf="user?.rol?.toLowerCase() === 'campesino'">
-        <ul class="dropdown-list content-campesino">
-          <li>
-            <details #socioDetails>
-              <summary>Sociodemográfica</summary>
-              <ng-container *ngIf="socioData; else noSocioData">
-                <form #socioForm="ngForm" (ngSubmit)="updateSocioData()">
-                  <div class="group">
-                    <label class="lbl" for="residenceYears">Años de Residencia</label>
-                    <input type="number" id="residenceYears" class="input"
-                           [(ngModel)]="socioData.residenceYears" (ngModelChange)="checkSocioModified()"
-                           name="residenceYears">
-                  </div>
-                  <div class="group">
-                    <label class="lbl" for="residenceMonths">Meses de Residencia</label>
-                    <input type="number" id="residenceMonths" class="input"
-                           [(ngModel)]="socioData.residenceMonths" (ngModelChange)="checkSocioModified()"
-                           name="residenceMonths">
-                  </div>
-                  <div class="group">
-                    <label class="lbl" for="selfIdentification">Autoidentificación</label>
-                    <select id="selfIdentification" class="input"
-                            [(ngModel)]="socioData.selfIdentification" (ngModelChange)="checkSocioModified()"
-                            name="selfIdentification">
-                      <option value="Campesino(a)">Campesino(a)</option>
-                      <option value="Trabajador(a) rural">Trabajador(a) rural</option>
-                      <option value="Habitante rural">Habitante rural</option>
-                      <option value="Otro">Otro</option>
-                    </select>
-                  </div>
-                  <div class="group" *ngIf="socioData.selfIdentification === 'Otro'">
-                    <label class="lbl" for="otherIdentification">Especificar</label>
-                    <input type="text" id="otherIdentification" class="input"
-                           [(ngModel)]="socioData.otherIdentification" (ngModelChange)="checkSocioModified()"
-                           name="otherIdentification">
-                  </div>
-                  <div class="group">
-                    <label class="lbl" for="ethnicGroup">Grupo Étnico</label>
-                    <select id="ethnicGroup" class="input"
-                            [(ngModel)]="socioData.ethnicGroup" (ngModelChange)="checkSocioModified()"
-                            name="ethnicGroup">
-                      <option value="Indígena">Indígena</option>
-                      <option value="Afrocolombiano">Afrocolombiano</option>
-                      <option value="Raizales">Raizales</option>
-                      <option value="ROM o gitano">ROM o gitano</option>
-                      <option value="Ninguno">Ninguno</option>
-                    </select>
-                  </div>
-                  <div class="group" *ngIf="socioData.ethnicGroup !== 'Ninguno'">
-                    <label class="lbl" for="ethnicGroupDetail">Detalle Étnico</label>
-                    <input type="text" id="ethnicGroupDetail" class="input"
-                           [(ngModel)]="socioData.ethnicGroupDetail" (ngModelChange)="checkSocioModified()"
-                           name="ethnicGroupDetail">
-                  </div>
-                  <div class="group">
-                    <label class="lbl" for="hasDisability">¿Tiene Discapacidad?</label>
-                    <select id="hasDisability" class="input"
-                            [(ngModel)]="socioData.hasDisability" (ngModelChange)="checkSocioModified()"
-                            name="hasDisability">
-                      <option [ngValue]="true">Sí</option>
-                      <option [ngValue]="false">No</option>
-                    </select>
-                  </div>
-                  <div class="group" *ngIf="socioData.hasDisability">
-                    <label class="lbl" for="disabilityDetail">Detalle Discapacidad</label>
-                    <input type="text" id="disabilityDetail" class="input"
-                           [(ngModel)]="socioData.disabilityDetail" (ngModelChange)="checkSocioModified()"
-                           name="disabilityDetail">
-                  </div>
-                  <div class="group">
-                    <label class="lbl" for="conflictVictim">¿Víctima del Conflicto?</label>
-                    <select id="conflictVictim" class="input"
-                            [(ngModel)]="socioData.conflictVictim" (ngModelChange)="checkSocioModified()"
-                            name="conflictVictim">
-                      <option [ngValue]="true">Sí</option>
-                      <option [ngValue]="false">No</option>
-                    </select>
-                  </div>
-                  <div class="group">
-                    <label class="lbl" for="educationLevel">Nivel Educativo</label>
-                    <select id="educationLevel" class="input"
-                            [(ngModel)]="socioData.educationLevel" (ngModelChange)="checkSocioModified()"
-                            name="educationLevel">
-                      <option value="Ninguna">Ninguna</option>
-                      <option value="Primaria">Primaria</option>
-                      <option value="Secundaria">Secundaria</option>
-                      <option value="Técnico o Tecnológico">Técnico o Tecnológico</option>
-                      <option value="Profesional">Profesional</option>
-                      <option value="Posgrado">Posgrado</option>
-                    </select>
-                  </div>
-                  <button type="submit" class="btn" [disabled]="!isSocioModified">Actualizar Información Sociodemográfica</button>
-                </form>
-              </ng-container>
-              <ng-template #noSocioData>
-                <p>No se encontró información sociodemográfica.</p>
-                <button type="button" class="btn" (click)="loadSocioData()">Refrescar Información</button>
-              </ng-template>
-            </details>
-          </li>
-          <!-- Sección: Familia u otras (solo para campesino) -->
-          <li>
-            <details>
-              <summary>Familia</summary>
-              <div class="content">
-                Contenido correspondiente a la opción Familia.
-              </div>
-            </details>
-          </li>
-        </ul>
-      </div>
+     
     </div>
   </div>
   

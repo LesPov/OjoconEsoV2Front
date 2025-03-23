@@ -1,19 +1,20 @@
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { authenticationRoutes } from './components/auth/routes/auth.router';
-import { clientRouter } from './components/client/routes/clientRoutes';
 import { adminRouter } from './components/admin/routes/adminRoutes';
-import { campesinoRouter } from './components/campesino/routes/campesinoRouter';
+import { userRouter } from './components/users/routes/userRoutes';
+import { DenunciasRoutes } from './components/denuncias/middleware/routes/denunciasRoutes';
 
 export const routes: Routes = [
     ...authenticationRoutes,
-    ...clientRouter,
     ...adminRouter,
-    ...campesinoRouter,
+    ...userRouter,
+    ...DenunciasRoutes,
 
-    { path: 'loading', loadComponent: () => import('./components/loading/loading.component').then(m => m.LoadingComponent) },
+    { path: 'loading', loadComponent: () => import('./components/shared/loading/loading.component').then(m => m.LoadingComponent) },
+    { path: 'inicio', loadComponent: () => import('./components/shared/inicio/inicio.component').then(m => m.InicioComponent) },
     { path: '', redirectTo: '/loading', pathMatch: 'full' },
-    { path: '**', redirectTo: '/loading' },
+    { path: '**', redirectTo: '/loading' }, 
 ];
 @NgModule({
     imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })],
