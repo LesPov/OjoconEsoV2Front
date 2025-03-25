@@ -1,6 +1,8 @@
 <!-- email-code.component.html -->
 <div class="wrapper">
   <div class="body">
+    <i class='bx bx-chevron-left' (click)="goBack()"></i>
+
     <a class="close-icon" (click)="showConfirmationDialog()">
       <i class='bx bx-x'></i>
     </a>
@@ -14,7 +16,7 @@
     <div class="row1">
       <div class="title">
         <h3>Verificación de identidad</h3>
-      </div>
+      </div> 
 
       <div *ngIf="!showUsernameForm" class="welcome-message">
         Bienvenido<span class="username-background">{{ username }}</span> <br>

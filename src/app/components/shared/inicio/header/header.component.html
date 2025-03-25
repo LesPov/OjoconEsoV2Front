@@ -1,0 +1,26 @@
+<div class="header">
+  <div class="header-left">
+    <!-- Al hacer clic en el ícono se activa el dropdown -->
+    <i class='bx bx-chevron-down' (click)="toggleDropdown()"></i>
+
+    <!-- Dropdown: se muestra solo cuando dropdownVisible es true -->
+    <div class="dropdown" *ngIf="dropdownVisible">
+      <ul>
+        <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <a routerLink="/auth/login" (click)="dropdownVisible=false">Inicio de Sesion</a>
+        </li>
+        <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <a routerLink="/auth/register">Registrarse</a>
+        </li>
+        <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <a routerLink="/soporte">Soporte</a>
+       
+      </ul> 
+    </div>
+  </div>
+
+  <h2>Tu CampiAmigo</h2>
+  <!-- Al hacer clic en el ícono de huella se llama a speakBot() -->
+  <i class='bx bx-fingerprint bx-rotate-180' (click)="speakBot()"></i>
+</div>
+ 

@@ -20,7 +20,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription = new Subscription();
   dropdownVisible: boolean = false;
-
+ 
   constructor(
     private router: Router, 
     private location: Location,

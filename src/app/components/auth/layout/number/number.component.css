@@ -8,15 +8,32 @@
   width: 100%;
   min-height: 100vh;
   text-align: center;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 
 
 }
 
+.bx-chevron-left {
+  -webkit-tap-highlight-color: transparent;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #232949;
+  position: absolute;
+  color: #fff;
+  display: flex;
+  top: 20px;
+  left: 20px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  font-size: 20px;
+}
+
 .close-icon {
   position: absolute;
-  top: 40px;
-  right: 40px;
+  top: 20px;
+  right: 20px;
   font-size: 24px;
   color: #333;
   text-decoration: none;
@@ -46,6 +63,7 @@
   margin-top: 5rem;
 
 }
+
 .welcome-message {
   font-size: 16px;
   margin-top: 20px;
@@ -54,6 +72,7 @@
   max-width: 350px;
 
 }
+
 .title h3 {
   color: #2c3e50;
   max-width: 300px;
@@ -90,7 +109,7 @@
 .form-control {
   width: 95%;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #2c3e50;
   border-radius: 5px;
   font-size: 14px;
   width: 120px;
@@ -193,19 +212,20 @@
 }
 
 
-.wrapper>*{
+.wrapper>* {
   animation: fadeIn 0.6s ease-out forwards;
 
 }
+
 /* Animaciones */
 @keyframes fadeIn {
   from {
-      opacity: 0;
-      transform: translateY(20px);
+    opacity: 0;
+    transform: translateY(20px);
   }
 
   to {
-      opacity: 1;
-      transform: translateY(0);
+    opacity: 1;
+    transform: translateY(0);
   }
 }

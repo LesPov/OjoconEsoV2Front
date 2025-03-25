@@ -1,44 +1,152 @@
-<!-- inicio.component.html -->
+<app-header></app-header>
 
 <div class="body">
-    <source srcset="imagen.webp" type="image/webp">
-    <img class="imagen_logo1" loading="lazy" src="../../../../assets/img/inicio/ojoconesologo.png" alt="">
-    <img class="imagen_logo" loading="lazy"  src="../../../../assets/img/inicio/newondo.png" alt="">
-
-    <div class="container_content">
-        <button type="button" class="buttonDo"
-        (click)="showwarnig()">Denuncia Oficial</button>
-        <button type="button" class="buttonDa"
-            (click)="openModal('Denuncia Anónima', 'tel:123', '/body')">Denuncia Anónima</button>
-        <button type="button" class="buttonVg"
-        (click)="showwarnig()">
-            Violencia de género <i class='bx bx-male-female bx-flashing'></i>
-        </button>
-        <div class="logaout">
-            <a class="login"  routerLink="/auth/login">Iniciar sesión <i class='bx bx-right-arrow-alt'></i></a>
-            <a class="register" routerLink="/auth/register" >Regístrate <i class='bx bx-right-arrow-alt'></i></a>
-        </div>
-        <a (click)="showwarnig()">¿Cómo hacer una denuncia? <i class='bx bx-help-circle'></i></a>
+  <!-- Sección Hero: Bienvenida e Introducción -->
+  <section id="hero" class="section hero">
+    <div class="container_hero">
+      <h1>¡Bienvenido a CampiAmigo!</h1>
+      <p>
+        La plataforma que revoluciona la visualización en 3D de terrenos y productos agrícolas.
+        Conecta a productores y clientes en un solo lugar, donde cualquiera puede registrarse para
+        descubrir experiencias únicas en el campo.
+      </p>
+      <!-- Al hacer clic, redirige a Login -->
+      <button class="cta-button" (click)="onLogin()">Explora ahora</button>
     </div>
+  </section>
 
-    <div *ngIf="currentModal" class="modal">
-        <div class="modal-content">
-            <span class="close" (click)="closeModal()">&times;</span>
-            <div class="content">
-                <!-- Aquí va el botón animado -->
-                <div class="warning-icon">
-                    <span>!</span>
-                </div>
-                <p>Esta aplicación no es para reportar situaciones de emergencia. Si se encuentra en peligro inminente
-                    <br>
-                    <span>llame al 123.</span>
-                </p>
-                <div class="buttons_modal">
-                     <button class="call" (click)="makeCall()">Llamar 123</button>
-                    <button class="learn-more" (click)="navigateToRoute()">Continuar</button>
-                </div>
-            </div>
+  <!-- Sección Territorios en 3D -->
+  <section id="territorios" class="section territorios">
+    <div class="container_territorios">
+      <h2>Territorios</h2>
+      <p>Explora modelos detallados de terrenos.</p>
+      <div class="territorios-grid">
+        <div class="territorio-card card">
+          <div class="model-container">
+            <canvas #terrainCanvas id="terrainCanvas" (click)="openModal()"></canvas>
+          </div>
         </div>
+      </div>
     </div>
+  </section>
 
+  <!-- Modal (para iniciar sesión/registrarse) -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <span class="close-button" (click)="closeModal()">×</span>
+      <h2>Para ver más territorios</h2>
+      <p>
+        Debes iniciar sesión o registrarte. Puedes hacerlo como CampiAmigo o como cliente para explorar los territorios y elegir el mejor para tus necesidades.
+      </p>
+      <div class="modal-buttons">
+        <button class="modal-button register-button" (click)="onRegister()">Registrarse</button>
+        <button class="modal-button login-button" (click)="onLogin()">Login</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección Productos Agrícolas en 3D -->
+  <section id="productos3d" class="section productos3d">
+    <div class="container_productos3d">
+      <h2>Productos Agrícolas</h2>
+      <p>
+        Visualiza los productos agrícolas desde todos los ángulos.
+      </p>
+      <h3 class="product-title">{{ productNames[currentProductIndex] }}</h3>
+      <div class="productos-grid">
+        <div class="producto-card card">
+          <div class="model-container">
+            <canvas #productosCanvas id="productosCanvas" (click)="openModal()"></canvas>
+          </div>
+          <button class="change-model-button" (click)="changeProductModel()">Cambiar Producto</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección Características Principales -->
+  <section id="caracteristicas" class="section caracteristicas">
+    <div class="container_caracteristicas">
+      <h2>Características Principales</h2>
+      <p>
+        Nuestra plataforma ofrece herramientas avanzadas para transformar tu experiencia agrícola.
+      </p>
+      <div class="features-grid">
+        <div class="feature card">
+          <i class='bx bx-map-alt'></i>
+          <h3>Mapeo de Terrenos</h3>
+          <p>
+            Visualiza tus terrenos en 3D con detalles precisos de topografía y composición del producto.
+          </p>
+        </div>
+        <div class="feature card">
+          <i class='bx bx-leaf'></i>
+          <h3>Cultivos Virtuales</h3>
+          <p>
+            Simula el crecimiento de diferentes cultivos y planifica mejor tus estrategias agrícolas.
+          </p>
+        </div>
+        <div class="feature card">
+          <i class='bx bx-bar-chart'></i>
+          <h3>Análisis de Rendimiento</h3>
+          <p>
+            Obtén estadísticas y predicciones sobre el desempeño de tus cultivos para tomar decisiones informadas.
+          </p>
+        </div>
+        <div class="feature card">
+          <i class='bx bx-cloud-snow'></i>
+          <h3>Datos Climáticos</h3>
+          <p>
+            Accede a datos climáticos integrados y optimiza tus decisiones con información actualizada.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección Llamado a la Acción General -->
+  <section id="cta" class="section cta">
+    <div class="container_cta">
+      <h2>Comienza a Explorar Hoy</h2>
+      <p>
+        Regístrate para acceder a todas las herramientas y transforma tu experiencia agrícola.
+      </p>
+      <div class="cta-buttons">
+        <!-- Botón que redirige a Registro -->
+        <button class="cta-button_first" (click)="onRegister()">Registrarse</button>
+        <!-- Botón que muestra mensaje toast -->
+        <button class="cta-button_secondary" (click)="onInfo()">Más Información</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección Footer -->
+  <section id="footer" class="section footer">
+    <div class="container_footer">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <h3>CampiAmigo</h3>
+          <p>Transformando la agricultura con tecnología 3D avanzada.</p>
+        </div>
+        <div class="footer-links-container">
+          <h4>Enlaces</h4>
+          <div class="footer-links">
+            <a (click)="scrollTo('hero')">Inicio</a>
+            <a (click)="scrollTo('territorios')">Territorios</a>
+            <a (click)="scrollTo('productos3d')">Productos</a>
+            <a (click)="scrollTo('caracteristicas')">Características</a>
+            <a (click)="scrollTo('cta')">Contacto</a>
+          </div>
+        </div>
+        <div class="footer-contact-container">
+          <h4>Contacto</h4>
+          <p>tucampiamigogmail.com</p>
+          <p>+57 (302) 6536186</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 CampiAmigo. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </section>
 </div>

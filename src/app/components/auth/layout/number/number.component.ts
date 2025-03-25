@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { authService } from '../../services/auths';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { HttpErrorResponse } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http'; 
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -26,6 +26,8 @@ export class NumberComponent {
   constructor(
     private authService: authService,
     private route: ActivatedRoute,
+    private location: Location,
+
     private toastr: ToastrService,
     private router: Router
   ) {}
@@ -44,7 +46,10 @@ export class NumberComponent {
     this.showLogo = this.selectedCountryCode === '+57';
     this.showCountryName = this.selectedCountryCode !== '+57';
   }
-  
+   // Método para volver
+   goBack(): void {
+    this.location.back();
+  }
   loadCountries() {
     this.authService.getCountries().subscribe(
       countries => {

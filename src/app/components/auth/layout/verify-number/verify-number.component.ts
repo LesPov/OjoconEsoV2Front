@@ -1,9 +1,9 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { ToastrService } from 'ngx-toastr'; 
 import { authService } from '../../services/auths';
 
 @Component({
@@ -27,6 +27,8 @@ export class VerifyNumberComponent {
     private authService: authService,
     private route: ActivatedRoute,
     private toastr: ToastrService,
+    private location: Location,
+
     private router: Router
   ) {}
 
@@ -41,6 +43,10 @@ export class VerifyNumberComponent {
     this.startTimer();
 
   }
+     // Método para volver
+     goBack(): void {
+      this.location.back();
+    }
   startTimer() {
     this.timerVisible = true;
     this.interval = setInterval(() => {
