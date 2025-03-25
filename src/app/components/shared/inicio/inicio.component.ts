@@ -45,12 +45,16 @@ export class InicioComponent implements AfterViewInit, OnDestroy {
   productNames: string[] = ['Manzanas', 'Papas', 'Calabaza'];
   currentProductIndex: number = 0;
   readonly DESIRED_PRODUCT_SIZE: number = 150;
+<<<<<<< HEAD
   // Bandera para evitar carga concurrente de modelos
   isProductLoading: boolean = false;
+=======
+>>>>>>> abde89c (Actualizar endpoint de desarrollo, mejorar estilos en componentes de autenticación y agregar funcionalidad de navegación hacia atrás.)
 
   // Controla la visibilidad del modal (usado en ambas secciones)
   showModal: boolean = false;
 
+<<<<<<< HEAD
   // Arreglo de secciones (IDs de elementos en el HTML) para el scroll
   private sections: string[] = ['hero', 'territorios', 'productos3d', 'caracteristicas', 'cta', 'footer'];
   private scrollSubscription!: Subscription;
@@ -93,10 +97,31 @@ export class InicioComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+=======
+  resizeHandler = () => this.onWindowResize();
+
+  constructor(
+    private viewportScroller: ViewportScroller,
+    private router: Router,
+    private toastr: ToastrService
+  ) { }
+
+  ngAfterViewInit() {
+    this.initTerritoryScene();
+    this.initProductScene();
+    this.animateTerritory();
+    this.animateProduct();
+  }
+
+>>>>>>> abde89c (Actualizar endpoint de desarrollo, mejorar estilos en componentes de autenticación y agregar funcionalidad de navegación hacia atrás.)
   // Función para hacer scroll a una sección con offset
   scrollTo(section: string) {
     const element = document.getElementById(section);
     if (element) {
+<<<<<<< HEAD
+=======
+      // Offset negativo para dejar espacio y que se vea el título (ej. 60px)
+>>>>>>> abde89c (Actualizar endpoint de desarrollo, mejorar estilos en componentes de autenticación y agregar funcionalidad de navegación hacia atrás.)
       const yOffset = -60;
       const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
@@ -105,14 +130,26 @@ export class InicioComponent implements AfterViewInit, OnDestroy {
 
   /* Métodos para redirección y toast */
   onLogin() {
+<<<<<<< HEAD
+=======
+    // Redirige a la ruta de login ('auth/login')
+>>>>>>> abde89c (Actualizar endpoint de desarrollo, mejorar estilos en componentes de autenticación y agregar funcionalidad de navegación hacia atrás.)
     this.router.navigate(['auth/login']);
   }
 
   onRegister() {
+<<<<<<< HEAD
+=======
+    // Redirige a la ruta de registro ('auth/register')
+>>>>>>> abde89c (Actualizar endpoint de desarrollo, mejorar estilos en componentes de autenticación y agregar funcionalidad de navegación hacia atrás.)
     this.router.navigate(['auth/register']);
   }
 
   onInfo() {
+<<<<<<< HEAD
+=======
+    // Muestra un toast de advertencia personalizado con ngx-toastr
+>>>>>>> abde89c (Actualizar endpoint de desarrollo, mejorar estilos en componentes de autenticación y agregar funcionalidad de navegación hacia atrás.)
     this.toastr.warning('Por el momento esta funcionalidad no está lista.', 'Advertencia', {
       timeOut: 3000,
       progressBar: true,
@@ -173,7 +210,11 @@ export class InicioComponent implements AfterViewInit, OnDestroy {
         this.letrasModel = gltf.scene;
         this.letrasModel.position.set(-350, 550, 0);
         this.letrasModel.scale.set(120, 120, 120);
+<<<<<<< HEAD
         this.letrasModel.rotation.set(0, -39.3, 5);
+=======
+        this.letrasModel.rotation.set(0, -39.5, 5);
+>>>>>>> abde89c (Actualizar endpoint de desarrollo, mejorar estilos en componentes de autenticación y agregar funcionalidad de navegación hacia atrás.)
         this.letrasModel.traverse((child) => {
           if ((child as THREE.Mesh).isMesh) {
             const mesh = child as THREE.Mesh;
@@ -232,6 +273,7 @@ export class InicioComponent implements AfterViewInit, OnDestroy {
   }
 
   loadProductModel(index: number) {
+<<<<<<< HEAD
     // Impide carga concurrente
     if (this.isProductLoading) {
       return;
@@ -239,6 +281,8 @@ export class InicioComponent implements AfterViewInit, OnDestroy {
     this.isProductLoading = true;
 
     // Remueve el modelo actual si existe
+=======
+>>>>>>> abde89c (Actualizar endpoint de desarrollo, mejorar estilos en componentes de autenticación y agregar funcionalidad de navegación hacia atrás.)
     if (this.currentProductModel) {
       this.productScene.remove(this.currentProductModel);
     }
@@ -259,6 +303,7 @@ export class InicioComponent implements AfterViewInit, OnDestroy {
         this.currentProductModel.position.sub(center);
         this.productScene.add(this.currentProductModel);
         console.log(`Producto ${index + 1} ("${this.productNames[index]}") cargado con factor de escala ${scaleFactor.toFixed(2)}`);
+<<<<<<< HEAD
         // Finaliza la carga
         this.isProductLoading = false;
       },
@@ -267,14 +312,22 @@ export class InicioComponent implements AfterViewInit, OnDestroy {
         console.error('Error al cargar el producto:', error);
         this.isProductLoading = false;
       }
+=======
+      },
+      undefined,
+      (error) => console.error('Error al cargar el producto:', error)
+>>>>>>> abde89c (Actualizar endpoint de desarrollo, mejorar estilos en componentes de autenticación y agregar funcionalidad de navegación hacia atrás.)
     );
   }
 
   changeProductModel() {
+<<<<<<< HEAD
     // Si ya se está cargando un modelo, se ignora el click
     if (this.isProductLoading) {
       return;
     }
+=======
+>>>>>>> abde89c (Actualizar endpoint de desarrollo, mejorar estilos en componentes de autenticación y agregar funcionalidad de navegación hacia atrás.)
     this.currentProductIndex = (this.currentProductIndex + 1) % this.productModels.length;
     this.loadProductModel(this.currentProductIndex);
   }
@@ -326,9 +379,12 @@ export class InicioComponent implements AfterViewInit, OnDestroy {
       cancelAnimationFrame(this.productFrameId);
     }
     window.removeEventListener('resize', this.resizeHandler, false);
+<<<<<<< HEAD
     if (this.scrollSubscription) {
       this.scrollSubscription.unsubscribe();
     }
+=======
+>>>>>>> abde89c (Actualizar endpoint de desarrollo, mejorar estilos en componentes de autenticación y agregar funcionalidad de navegación hacia atrás.)
     console.log('Componente destruido.');
   }
 }
