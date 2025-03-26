@@ -10,6 +10,6 @@ import { HeaderComponent } from '../header/header.component';
   styleUrl: './body.component.css'
 })
 export class BodyComponent {
- 
+
 }
  
