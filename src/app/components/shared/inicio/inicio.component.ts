@@ -43,6 +43,8 @@ export class InicioComponent implements AfterViewInit, OnDestroy {
   productNames: string[] = ['Manzanas', 'Papas', 'Calabaza'];
   currentProductIndex: number = 0;
   readonly DESIRED_PRODUCT_SIZE: number = 150;
+  // Bandera para evitar carga concurrente de modelos
+  isProductLoading: boolean = false;
 
   // Controla la visibilidad del modal (usado en ambas secciones)
   showModal: boolean = false;
@@ -60,13 +62,13 @@ export class InicioComponent implements AfterViewInit, OnDestroy {
     this.initProductScene();
     this.animateTerritory();
     this.animateProduct();
+    window.addEventListener('resize', this.resizeHandler, false);
   }
 
   // Función para hacer scroll a una sección con offset
   scrollTo(section: string) {
     const element = document.getElementById(section);
     if (element) {
-      // Offset negativo para dejar espacio y que se vea el título (ej. 60px)
       const yOffset = -60;
       const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
@@ -75,17 +77,14 @@ export class InicioComponent implements AfterViewInit, OnDestroy {
 
   /* Métodos para redirección y toast */
   onLogin() {
-    // Redirige a la ruta de login ('auth/login')
     this.router.navigate(['auth/login']);
   }
 
   onRegister() {
-    // Redirige a la ruta de registro ('auth/register')
     this.router.navigate(['auth/register']);
   }
 
   onInfo() {
-    // Muestra un toast de advertencia personalizado con ngx-toastr
     this.toastr.warning('Por el momento esta funcionalidad no está lista.', 'Advertencia', {
       timeOut: 3000,
       progressBar: true,
@@ -205,6 +204,13 @@ export class InicioComponent implements AfterViewInit, OnDestroy {
   }
 
   loadProductModel(index: number) {
+    // Impide carga concurrente
+    if (this.isProductLoading) {
+      return;
+    }
+    this.isProductLoading = true;
+    
+    // Remueve el modelo actual si existe
     if (this.currentProductModel) {
       this.productScene.remove(this.currentProductModel);
     }
@@ -225,13 +231,22 @@ export class InicioComponent implements AfterViewInit, OnDestroy {
         this.currentProductModel.position.sub(center);
         this.productScene.add(this.currentProductModel);
         console.log(`Producto ${index + 1} ("${this.productNames[index]}") cargado con factor de escala ${scaleFactor.toFixed(2)}`);
+        // Finaliza la carga
+        this.isProductLoading = false;
       },
       undefined,
-      (error) => console.error('Error al cargar el producto:', error)
+      (error) => {
+        console.error('Error al cargar el producto:', error);
+        this.isProductLoading = false;
+      }
     );
   }
 
   changeProductModel() {
+    // Si ya se está cargando un modelo, se ignora el click
+    if (this.isProductLoading) {
+      return;
+    }
     this.currentProductIndex = (this.currentProductIndex + 1) % this.productModels.length;
     this.loadProductModel(this.currentProductIndex);
   }
