@@ -6,6 +6,8 @@ import { HeaderComponent } from './header/header.component';
 import { CommonModule, ViewportScroller } from '@angular/common';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { BotInfoService } from '../../admin/layout/utils/botInfoCliente';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-inicio',
@@ -49,13 +51,33 @@ export class InicioComponent implements AfterViewInit, OnDestroy {
   // Controla la visibilidad del modal (usado en ambas secciones)
   showModal: boolean = false;
 
+  // Arreglo de secciones (IDs de elementos en el HTML) para el scroll
+  private sections: string[] = ['hero', 'territorios', 'productos3d', 'caracteristicas', 'cta', 'footer'];
+  private scrollSubscription!: Subscription;
+
   resizeHandler = () => this.onWindowResize();
+
+  // Definimos un array de mensajes que el bot leerá (uno por cada sección)
+  private infoInicio: string[] = [
+    "Bienvenido a CampiAmigo, la plataforma que revoluciona la agricultura.",
+    "Explora nuestros Territorios en 3D y conoce la topografía de Colombia.",
+    "Descubre los Productos Agrícolas con vistas 360°.",
+    "Conoce nuestras Características Principales y ventajas.",
+    "Comienza a explorar hoy y transforma tu experiencia agrícola.",
+    "Gracias por visitarnos, sigue navegando y descubre más."
+  ];
 
   constructor(
     private viewportScroller: ViewportScroller,
     private router: Router,
+    private botInfoService: BotInfoService,
     private toastr: ToastrService
   ) { }
+
+  ngOnInit(): void {
+    // Establece la lista de mensajes que leerá el bot.
+    this.botInfoService.setInfoList(this.infoInicio);
+  }
 
   ngAfterViewInit() {
     this.initTerritoryScene();
@@ -63,6 +85,12 @@ export class InicioComponent implements AfterViewInit, OnDestroy {
     this.animateTerritory();
     this.animateProduct();
     window.addEventListener('resize', this.resizeHandler, false);
+
+    // Suscribirse al scrollIndex para hacer scroll en el contenido
+    this.scrollSubscription = this.botInfoService.getScrollIndex().subscribe(index => {
+      const sectionId = this.sections[index % this.sections.length];
+      this.scrollTo(sectionId);
+    });
   }
 
   // Función para hacer scroll a una sección con offset
@@ -209,7 +237,7 @@ export class InicioComponent implements AfterViewInit, OnDestroy {
       return;
     }
     this.isProductLoading = true;
-    
+
     // Remueve el modelo actual si existe
     if (this.currentProductModel) {
       this.productScene.remove(this.currentProductModel);
@@ -298,6 +326,9 @@ export class InicioComponent implements AfterViewInit, OnDestroy {
       cancelAnimationFrame(this.productFrameId);
     }
     window.removeEventListener('resize', this.resizeHandler, false);
+    if(this.scrollSubscription) {
+      this.scrollSubscription.unsubscribe();
+    }
     console.log('Componente destruido.');
   }
 }

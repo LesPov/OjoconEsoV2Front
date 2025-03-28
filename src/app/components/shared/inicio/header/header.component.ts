@@ -5,9 +5,9 @@ import { BotInfoService } from '../../../admin/layout/utils/botInfoCliente';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive], 
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css'
+  styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
 
@@ -34,15 +34,7 @@ export class HeaderComponent {
 
   // Función para activar el bot de voz al hacer clic en el ícono
   speakBot(): void {
-    if (this.botInfoService.isSpeakingNow()) {
-      // Si el bot está hablando, cancelamos la reproducción actual.
-      this.botInfoService.cancelSpeak();
-    } else {
-      // Si no está hablando, obtenemos el siguiente mensaje y lo reproducimos.
-      const info = this.botInfoService.getNextInfo();
-      this.botInfoService.speak(info)
-        .catch((error) => console.error('Error en el bot:', error));
-    }
+    this.botInfoService.speakNextAndScroll()
+      .catch((error) => console.error('Error en el bot:', error));
   }
-  
 }
