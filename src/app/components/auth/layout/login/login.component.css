@@ -1,3 +1,26 @@
+
+.bx {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #232949;
+    position: absolute;
+    color: #fff;
+    display: flex;
+    top: 20px; 
+    left: 20px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    font-size: 20px;
+
+}
+
+.bx-chevron-left {
+    -webkit-tap-highlight-color: transparent;
+    /* Elimina el color de resaltado en móviles */
+}
 .form {
     width: 100%;
     min-height: 100vh;
@@ -47,7 +70,7 @@
     color: #7f8c8d;
     font-weight: 400;
     font-size: 1rem;
-}
+} 
 
 .group {
     position: relative;

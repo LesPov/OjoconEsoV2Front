@@ -22,7 +22,7 @@ export class RegisterComponent implements OnInit {
   };
   confirmPassword: string = '';
 
-  constructor( 
+  constructor(  
     private toastr: ToastrService,
     private location: Location,
     private authService: authService,

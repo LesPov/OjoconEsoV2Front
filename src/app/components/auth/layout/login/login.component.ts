@@ -1,7 +1,7 @@
 /**
  * Componente de Login
  * 
- * Este componente gestiona el inicio de sesión de los usuarios. 
+ * Este componente gestiona el inicio de sesión de los usuarios.  
  * Se encarga de validar los campos de entrada, llamar al servicio de autenticación,
  * gestionar el almacenamiento del token y la redirección según el rol del usuario.
  * 
@@ -17,7 +17,7 @@ import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { auth } from '../../interfaces/auth';
 import { authService } from '../../services/auths';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserStatusService } from '../../../admin/services/user-status.service';
 
@@ -55,6 +55,8 @@ export class LoginComponent implements OnInit {
     private toastr: ToastrService,
     private authService: authService,
     private router: Router,
+    private location: Location,
+
     private userStatusService: UserStatusService,
     private route: ActivatedRoute
   ) { }
@@ -87,7 +89,10 @@ export class LoginComponent implements OnInit {
       }
     );
   }
-
+  // Método para volver
+  goBack(): void {
+    this.location.back();
+  }
   /**
    * Valida que los campos 'username' y 'passwordorrandomPassword' no estén vacíos.
    * @returns {boolean} True si ambos campos tienen contenido, false de lo contrario.
