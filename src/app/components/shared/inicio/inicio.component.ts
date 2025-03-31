@@ -173,7 +173,7 @@ export class InicioComponent implements AfterViewInit, OnDestroy {
         this.letrasModel = gltf.scene;
         this.letrasModel.position.set(-350, 550, 0);
         this.letrasModel.scale.set(120, 120, 120);
-        this.letrasModel.rotation.set(0, -39.5, 5);
+        this.letrasModel.rotation.set(0, -39.3, 5);
         this.letrasModel.traverse((child) => {
           if ((child as THREE.Mesh).isMesh) {
             const mesh = child as THREE.Mesh;
@@ -326,7 +326,7 @@ export class InicioComponent implements AfterViewInit, OnDestroy {
       cancelAnimationFrame(this.productFrameId);
     }
     window.removeEventListener('resize', this.resizeHandler, false);
-    if(this.scrollSubscription) {
+    if (this.scrollSubscription) {
       this.scrollSubscription.unsubscribe();
     }
     console.log('Componente destruido.');

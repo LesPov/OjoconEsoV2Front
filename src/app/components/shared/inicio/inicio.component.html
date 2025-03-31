@@ -6,22 +6,18 @@
     <div class="container_hero">
       <h1>¡Bienvenido a CampiAmigo!</h1>
       <p>
-        La plataforma que revoluciona la visualización en 3D de terrenos y productos agrícolas.
-        Conecta a productores y clientes en un solo lugar, donde cualquiera puede registrarse para
-        descubrir experiencias únicas en el campo.
+        La plataforma que conecta clientes y campiamigos en el mundo agrícola. Explora territorios en 3D, conoce a campiamigos verificados y descubre productos agrícolas de calidad.
       </p>
-      <!-- Al hacer clic, redirige a Login -->
-      <button class="cta-button" (click)="onLogin()">Explora ahora</button>
+      <button class="cta-button" (click)="onLogin()">Inicia sesión y explora</button>
     </div>
-  </section> 
+  </section>
 
   <!-- Sección Territorios en 3D -->
   <section id="territorios" class="section territorios">
     <div class="container_territorios">
-      <h2>Territorios</h2>
-      <p>Explora modelos detallados de terrenos.
-        <br>
-        de Colombia
+      <h2>Explora los Territorio</h2>
+      <p>
+        Visualiza modelos 3D detallados de territorios agrícolas y descubre dónde se encuentran tus campiamigos para realizar pedidos o agendar encuentros.
       </p>
       <div class="territorios-grid">
         <div class="territorio-card card">
@@ -33,27 +29,12 @@
     </div>
   </section>
 
-  <!-- Modal (para iniciar sesión/registrarse) -->
-  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <span class="close-button" (click)="closeModal()">×</span>
-      <h2>Para ver más territorios</h2>
-      <p>
-        Debes iniciar sesión o registrarte. Puedes hacerlo como CampiAmigo o como cliente para explorar los territorios y elegir el mejor para tus necesidades.
-      </p>
-      <div class="modal-buttons">
-        <button class="modal-button register-button" (click)="onRegister()">Registrarse</button>
-        <button class="modal-button login-button" (click)="onLogin()">Login</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Sección Productos Agrícolas en 3D -->
   <section id="productos3d" class="section productos3d">
     <div class="container_productos3d">
       <h2>Productos Agrícolas</h2>
       <p>
-        Visualiza los productos agrícolas desde todos los ángulos.
+        Descubre productos agrícolas desde todos los ángulos con visualización 360° e información detallada.
       </p>
       <h3 class="product-title">{{ productNames[currentProductIndex] }}</h3>
       <div class="productos-grid">
@@ -61,7 +42,7 @@
           <div class="model-container">
             <canvas #productosCanvas id="productosCanvas" (click)="openModal()"></canvas>
           </div>
-          <button class="change-model-button" (click)="changeProductModel()">Cambiar Producto</button>
+          <button class="change-model-button" (click)="changeProductModel()">Ver otro producto</button>
         </div>
       </div>
     </div>
@@ -70,58 +51,75 @@
   <!-- Sección Características Principales -->
   <section id="caracteristicas" class="section caracteristicas">
     <div class="container_caracteristicas">
-      <h2>Características Principales</h2>
+      <h2>Características de la Plataforma</h2>
       <p>
-        Nuestra plataforma ofrece herramientas avanzadas para transformar tu experiencia agrícola.
+        CampiAmigo te ofrece herramientas avanzadas para clientes y campiamigos. Mientras que los clientes pueden explorar territorios y productos, los campiamigos tienen acceso a noticias y análisis de rendimiento.
       </p>
       <div class="features-grid">
+        <!-- Territorios en 3D -->
         <div class="feature card">
           <i class='bx bx-map-alt'></i>
-          <h3>Mapeo de Terrenos</h3>
+          <h3>Territorios en 3D</h3>
           <p>
-            Visualiza tus terrenos en 3D con detalles precisos de topografía y composición del producto.
+            Explora modelos 3D detallados de terrenos agrícolas y conoce la ubicación de tus campiamigos.
           </p>
         </div>
+        <!-- Conexión con Campiamigos -->
         <div class="feature card">
-          <i class='bx bx-leaf'></i>
-          <h3>Cultivos Virtuales</h3>
+          <i class='bx bx-user-check'></i>
+          <h3>Conexión con Campiamigos</h3>
           <p>
-            Simula el crecimiento de diferentes cultivos y planifica mejor tus estrategias agrícolas.
+            Accede a perfiles verificados de campiamigos y obtén información sobre sus productos para coordinar pedidos.
           </p>
         </div>
+        <!-- Registro y Validación -->
         <div class="feature card">
-          <i class='bx bx-bar-chart'></i>
-          <h3>Análisis de Rendimiento</h3>
+          <i class='bx bx-check-shield'></i>
+          <h3>Registro y Validación</h3>
           <p>
-            Obtén estadísticas y predicciones sobre el desempeño de tus cultivos para tomar decisiones informadas.
+            Si deseas registrarte como campiamigo, se realizará un estudio detallado de tu perfil y productos para garantizar calidad y viabilidad.
           </p>
         </div>
+        <!-- Noticias y Rendimiento (Solo para Admins y Campiamigos) -->
         <div class="feature card">
-          <i class='bx bx-cloud-snow'></i>
-          <h3>Datos Climáticos</h3>
+          <i class='bx bx-news'></i>
+          <h3>Noticias y Rendimiento</h3>
           <p>
-            Accede a datos climáticos integrados y optimiza tus decisiones con información actualizada.
+            Mantente informado 24/7 con noticias reales de tu territorio y accede a análisis de rendimiento de tus cultivos.
           </p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Sección Llamado a la Acción General -->
+  <!-- Sección Llamado a la Acción -->
   <section id="cta" class="section cta">
     <div class="container_cta">
-      <h2>Comienza a Explorar Hoy</h2>
+      <h2>Empieza a Conectar y Descubrir</h2>
       <p>
-        Regístrate para acceder a todas las herramientas y transforma tu experiencia agrícola.
+        Inicia sesión o regístrate para explorar territorios en 3D, conectar con campiamigos y descubre productos agrícolas.
       </p>
       <div class="cta-buttons">
-        <!-- Botón que redirige a Registro -->
-        <button class="cta-button_first" (click)="onRegister()">Registrarse</button>
-        <!-- Botón que muestra mensaje toast -->
+        <button class="cta-button_first" (click)="onRegister()">Registrate</button>
         <button class="cta-button_secondary" (click)="onInfo()">Más Información</button>
       </div>
     </div>
   </section>
+
+  <!-- Modal: Acceso Restringido -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <span class="close-button" (click)="closeModal()">×</span>
+      <h2>Acceso Restringido</h2>
+      <p>
+        Para ver más territorios y detalles, inicia sesión o regístrate como Cliente o Campiamigo.
+      </p>
+      <div class="modal-buttons">
+        <button class="modal-button register-button" (click)="onRegister()">Registrarse</button>
+        <button class="modal-button login-button" (click)="onLogin()">Iniciar Sesión</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Sección Footer -->
   <section id="footer" class="section footer">
@@ -129,7 +127,7 @@
       <div class="footer-content">
         <div class="footer-brand">
           <h3>CampiAmigo</h3>
-          <p>Transformando la agricultura con tecnología 3D avanzada.</p>
+          <p>Conectando el mundo agrícola con tecnología 3D.</p>
         </div>
         <div class="footer-links-container">
           <h4>Enlaces</h4>
@@ -143,7 +141,7 @@
         </div>
         <div class="footer-contact-container">
           <h4>Contacto</h4>
-          <p>tucampiamigogmail.com</p>
+          <p>contactocampiamigo.com</p>
           <p>+57 (302) 6536186</p>
         </div>
       </div>
