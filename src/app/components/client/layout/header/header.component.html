@@ -1,0 +1,32 @@
+<div class="header">
+  <div class="header-left">
+    <!-- Al hacer clic en el ícono se activa el dropdown -->
+    <i class='bx bx-chevron-down' (click)="toggleDropdown()"></i>
+
+    <!-- Dropdown: se muestra solo cuando dropdownVisible es true -->
+    <div class="dropdown" *ngIf="dropdownVisible">
+      <ul>
+        <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <a routerLink="profile" (click)="dropdownVisible=false">Perfil</a>
+        </li>
+        <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <a routerLink="/configuracion">Configuración</a>
+        </li>
+        <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <a routerLink="/soporte">Soporte</a>
+        </li>
+        <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+<<<<<<<< HEAD:src/app/components/users/layaut/header/header.component.html
+          <a routerLink="/user/InfoRegister" (click)="dropdownVisible=false">Campiamigo</a>
+========
+          <a routerLink="/client/registerCampesino" (click)="dropdownVisible=false">Campiamigo</a>
+>>>>>>>> d3ccc9d (Eliminar componentes y estilos obsoletos, agregar nuevos componentes de mercado, dashboard y formulario, y actualizar la estructura del cuerpo de la aplicación.):src/app/components/client/layout/header/header.component.html
+        </li>
+      </ul> 
+    </div>
+  </div>
+
+  <h2>VeredaMarket</h2>
+  <!-- Al hacer clic en el ícono de huella se llama a speakBot() -->
+  <i class='bx bx-fingerprint bx-rotate-180' (click)="speakBot()"></i>
+</div>

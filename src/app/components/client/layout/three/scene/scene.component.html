@@ -1,0 +1,40 @@
+<!-- Overlay de carga con video a pantalla completa -->
+<div *ngIf="showOverlay" class="loading-overlay">
+  <video #loadingVideo autoplay muted preload="auto" (ended)="onVideoEnded()" class="loading-video">
+    <source [src]="zoneVideoSource" type="video/mp4">
+    Tu navegador no soporta el elemento de video.
+  </video>
+  <!-- El botón "Ver Modelo" se muestra solo si los modelos se han cargado -->
+  <button *ngIf="modelsLoaded" class="btn-ver" (click)="onViewModel()">Ver Modelo</button>
+</div>
+
+<!-- Contenedor de la escena (canvas) -->
+<div #rendererContainer class="renderer-container" [class.hidden]="showOverlay"></div>
+
+<!-- Botón para alternar la animación del sol -->
+<div class="botonsol" (click)="toggleSunAnimation()">
+  <i *ngIf="sunRotating; else sunIcon" class='bx bxs-brightness-half'></i>
+  <ng-template #sunIcon>
+    <i class='bx bxs-sun'></i>
+  </ng-template>
+</div>
+
+<!-- Menú interactivo en la parte inferior -->
+<div class="bottom-menu" [class.expanded]="isExpanded">
+  <div class="menu-header" (click)="toggleMenu()">
+    <i [class]="isExpanded ? 'bx bx-exit-fullscreen' : 'bx bx-target-lock'"></i>
+  </div>
+  <div class="menu-content">
+    <button (click)="goToIndicator(0)">Indicador 1</button>
+  </div>
+</div>
+
+<!-- Modal de ejemplo -->
+<div class="modal" *ngIf="modalVisible">
+  <div class="modal-content">
+    <span class="close" (click)="closeModal()">&times;</span>
+    <h2>Indicador</h2>
+    <p>{{ modalInfo }}</p>
+    <button (click)="closeModal()">Aceptar</button>
+  </div>
+</div>
