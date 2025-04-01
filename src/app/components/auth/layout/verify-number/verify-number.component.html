@@ -1,10 +1,8 @@
 <!-- email-code.component.html -->
 <div class="wrapper">
   <div class="body">
-    <i class='bx bx-chevron-left' (click)="goBack()"></i>
-
     <a class="close-icon" (click)="showConfirmationDialog()">
-      <i class='bx bx-x'></i>
+      <i class="fas fa-times"></i>
     </a>
     <div class="confirmation-overlay" *ngIf="showConfirmationMessage">
       <div class="confirmation-box">
@@ -45,7 +43,8 @@
       </div>
 
 
-      <button *ngIf="!timerVisible" type="button" (click)="resendVerificationCode()" class="btn" [disabled]="loading">
+      <button *ngIf="!timerVisible" type="button" (click)="resendVerificationCode()" class="btn"
+        [disabled]="loading">
         Enviar nuevo código
       </button><br>
 

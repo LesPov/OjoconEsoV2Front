@@ -14,14 +14,10 @@ export const routes: Routes = [
     { path: 'loading', loadComponent: () => import('./components/shared/loading/loading.component').then(m => m.LoadingComponent) },
     { path: 'inicio', loadComponent: () => import('./components/shared/inicio/inicio.component').then(m => m.InicioComponent) },
     { path: '', redirectTo: '/loading', pathMatch: 'full' },
-    { path: '**', redirectTo: '/loading' },
+    { path: '**', redirectTo: '/loading' }, 
 ];
 @NgModule({
-    imports: [RouterModule.forRoot(routes, {
-        preloadingStrategy: PreloadAllModules,
-        anchorScrolling: 'enabled',            // Habilita el anclaje
-        scrollPositionRestoration: 'enabled'     // Opcional: restaura la posición al navegar
-    })],
+    imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })],
     exports: [RouterModule]
 })
 export class AppRoutingModule { }

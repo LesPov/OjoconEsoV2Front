@@ -8,32 +8,15 @@
   width: 100%;
   min-height: 100vh;
   text-align: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 
 
-}
-
-.bx-chevron-left {
-  -webkit-tap-highlight-color: transparent;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: #232949;
-  position: absolute;
-  color: #fff;
-  display: flex;
-  top: 20px;
-  left: 20px;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  font-size: 20px;
 }
 
 .close-icon {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 40px;
+  right: 40px;
   font-size: 24px;
   color: #333;
   text-decoration: none;
@@ -138,7 +121,7 @@
   background: transparent;
   border: none;
   /* Eliminamos el borde predeterminado */
-  border-bottom: 2px solid #2c3e50;
+  border-bottom: 2px solid #000;
   /* Agregamos el borde inferior */
   border-radius: 0;
   /* Eliminamos la esquina redondeada */

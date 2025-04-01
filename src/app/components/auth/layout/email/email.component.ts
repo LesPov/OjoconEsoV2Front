@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { authService } from '../../services/auths';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { CommonModule, Location } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -24,8 +24,6 @@ export class EmailComponent implements OnInit {
   constructor(
     private authService: authService,
     private route: ActivatedRoute,
-    private location: Location,
-
     private toastr: ToastrService,
     private router: Router
   ) { }
@@ -39,10 +37,6 @@ export class EmailComponent implements OnInit {
     });
     this.startTimer();
 
-  }
-  // Método para volver
-  goBack(): void {
-    this.location.back();
   }
   startTimer() {
     this.timerVisible = true;
@@ -116,7 +110,7 @@ export class EmailComponent implements OnInit {
         this.timeLeft = 120; // Reinicia el temporizador
         this.startTimer();  // Inicia el temporizador nuevamente
         this.timerVisible = true; // Muestra el temporizador
-
+  
         // Reinicia los inputs del código
         this.verificationDigits = ['', '', '', '', '', ''];
       },
@@ -125,5 +119,5 @@ export class EmailComponent implements OnInit {
       }
     );
   }
-
+  
 }

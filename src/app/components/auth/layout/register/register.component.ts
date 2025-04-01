@@ -4,7 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { auth } from '../../interfaces/auth';
 import { authService } from '../../services/auths';
-import { CommonModule, Location } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -22,18 +22,14 @@ export class RegisterComponent implements OnInit {
   };
   confirmPassword: string = '';
 
-  constructor( 
+  constructor(
     private toastr: ToastrService,
-    private location: Location,
     private authService: authService,
     private router: Router
   ) { }
 
   ngOnInit(): void { }
-  // Método para volver
-  goBack(): void {
-    this.location.back();
-  }
+
   addUser() {
     // Validamos que el usuario ingrese valores
     if (

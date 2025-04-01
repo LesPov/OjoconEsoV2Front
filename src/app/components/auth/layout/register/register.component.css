@@ -5,33 +5,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     padding: 20px;
-    background: #FFF;
-
-}
-
-.bx {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: #232949;
-    position: absolute;
-    color: #fff;
-    display: flex;
-    top: 20px; 
-    top: 20px;
-    left: 20px;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-    font-size: 20px;
-
-}
-
-.bx-chevron-left {
-    -webkit-tap-highlight-color: transparent;
-    /* Elimina el color de resaltado en móviles */
 }
 
 .title {

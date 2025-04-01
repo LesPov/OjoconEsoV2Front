@@ -26,11 +26,8 @@
 
 /* Contenedor fijo para la imagen para evitar cambios en el layout */
 .modal-image-container {
-    width: 100%;
-    position: absolute;
-    height: 500px;
-    top: 75px;
-    height: 500px;  /* Ajusta este valor según el espacio que desees reservar */
+    width: 90%;
+    height: 200px;  /* Ajusta este valor según el espacio que desees reservar */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -88,9 +85,8 @@
 }
 
 .lava-lamp {
-    position: absolute;
-    top: 400px;
-    margin-top: 200px;
+    position: relative;
+    margin-top: 50px;
     width: 50px;
     height: 100px;
     background: #232949;
