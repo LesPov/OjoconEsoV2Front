@@ -45,16 +45,12 @@ export class InicioComponent implements AfterViewInit, OnDestroy {
   productNames: string[] = ['Manzanas', 'Papas', 'Calabaza'];
   currentProductIndex: number = 0;
   readonly DESIRED_PRODUCT_SIZE: number = 150;
-<<<<<<< HEAD
   // Bandera para evitar carga concurrente de modelos
   isProductLoading: boolean = false;
-=======
->>>>>>> abde89c (Actualizar endpoint de desarrollo, mejorar estilos en componentes de autenticación y agregar funcionalidad de navegación hacia atrás.)
 
   // Controla la visibilidad del modal (usado en ambas secciones)
   showModal: boolean = false;
 
-<<<<<<< HEAD
   // Arreglo de secciones (IDs de elementos en el HTML) para el scroll
   private sections: string[] = ['hero', 'territorios', 'productos3d', 'caracteristicas', 'cta', 'footer'];
   private scrollSubscription!: Subscription;
