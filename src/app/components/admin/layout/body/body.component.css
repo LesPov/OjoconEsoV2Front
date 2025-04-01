@@ -6,7 +6,7 @@
     z-index: 1;
     color: #000;
     scrollbar-width: none; 
-    -ms-overflow-style: none; 
+    -ms-overflow-style: none;
 }
 
 body::-webkit-scrollbar {

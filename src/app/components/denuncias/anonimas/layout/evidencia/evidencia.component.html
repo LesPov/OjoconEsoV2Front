@@ -1,0 +1,72 @@
+<div class="container">
+    <div class="relato">
+      <p>Relato de lo que pasó:</p>
+      <textarea class="descripcion" placeholder="Agrega el detalle de cómo ocurrieron los hechos"
+                (input)="onDescripcionChange($event)"></textarea>
+      <div *ngIf="showError" class="error-message">
+        La descripción debe contener al menos {{minimumWords}} palabras.
+      </div>
+    </div>
+  
+    <!-- Sección para subir contenido multimedia -->
+    <div class="multimedia">
+      <div *ngIf="showCamera" class="camera-container">
+        <video #cameraFeed id="cameraFeed" class="cameraFeed" autoplay playsinline></video>
+        <div class="camera-controls">
+          <div class="camera-sidenav">
+            <button class="botonvideo foto" [ngClass]="{'activo': isPhotoMode}" (click)="selectMode('photo')">
+              Foto
+            </button>
+            <button class="botonvideo video" [ngClass]="{'activo': !isPhotoMode}" (click)="selectMode('video')">
+              Video
+            </button>
+          </div>
+          <button class="capture-btn" *ngIf="isPhotoMode" (click)="capturePhoto()"></button>
+          <button class="record-btn" *ngIf="!isPhotoMode" [class.recording]="isRecordingVideo" (click)="toggleVideoRecording()">
+          </button>
+          <button class="close-btn" (click)="closeCamera()">
+            <i class='bx bx-x'></i>
+          </button>
+        </div>
+      </div>
+  
+      <div class="multimedia_content">
+        <p>Oprime el icono para agregar evidencia</p>
+        <i class='bx bx-camera' (click)="initCamera()"></i>
+        <i class='bx bxs-image-add' (click)="triggerFileUpload()"></i>
+      </div>
+  
+      <input type="file" id="fileInput" accept="image/*,video/*" (change)="onFileSelected($event)" style="display: none;" multiple>
+  
+      <!-- Vista previa de archivos -->
+      <div *ngIf="selectedMultimedia.length > 0" class="preview">
+        <p>Archivo seleccionado</p>
+        <div *ngFor="let item of selectedMultimedia; let i = index" class="file-preview">
+          <i (click)="removeFile(i)" class='bx bx-x bx-tada'></i>
+          <img *ngIf="isImage(item.file)" [src]="item.url" alt="Imagen seleccionada">
+          <video *ngIf="isVideo(item.file)" [src]="item.url" controls></video>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Sección de grabación de audio -->
+    <div class="multimedia_audio">
+      <p>Puedes agregar un audio de 1 minuto</p>
+      <div class="multimedia_content_audio">
+        <p>Oprime el icono para grabar audio</p>
+        <i class='bx bx-microphone' [class.recording]="isRecording" (click)="toggleRecording()"></i>
+      </div>
+      <div *ngIf="audioUrl" class="audio-preview">
+        <p>Audio grabado:</p>
+        <audio [src]="audioUrl" controls></audio>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Componente Navbar -->
+  <app-navbar
+    [currentStep]="currentStep" [totalSteps]="totalSteps" [showStepCounter]="true"
+    [denunciaSeleccionada]="descripcion.trim().length > 0 && wordCount >= minimumWords" 
+    (continuar)="handleContinue()">
+  </app-navbar>
+  

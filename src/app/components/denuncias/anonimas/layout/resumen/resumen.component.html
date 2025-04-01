@@ -1,0 +1,79 @@
+<div class="container">
+    <h2 class="title">Resumen de la Denuncia</h2>
+  
+    <div class="content">
+      <!-- Información básica -->
+      <div class="field">
+        <label class="label">Tipo de Denuncia:</label>
+        <input type="text" [value]="datosResumen.nombreTipo || 'No especificado'" readonly class="input_full">
+      </div>
+  
+      <div class="field">
+        <label class="label">Subtipo de Denuncia:</label>
+        <input type="text" [value]="datosResumen.nombreSubtipo || 'No especificado'" readonly class="input_full">
+      </div>
+  
+      <div class="field">
+        <label class="label">Ubicación:</label>
+        <input type="text" [value]="datosResumen.direccion || 'No especificada'" readonly class="input_full">
+      </div>
+  
+      <div class="field">
+        <label class="label">Descripción:</label>
+        <textarea [value]="datosResumen.descripcion || 'Sin descripción'" readonly class="textarea"></textarea>
+      </div>
+  
+      <!-- Evidencias Multimedia -->
+      <div class="field evidencias-field">
+        <label class="label">Evidencias adjuntas:</label>
+        <!-- Multimedia (imágenes y videos) -->
+        <div *ngIf="previewPruebas.length > 0; else noEvidencias" class="evidencias-grid">
+          <div *ngFor="let item of previewPruebas" class="evidencia-item">
+            <!-- Si es imagen, se añade el click para ver en modal -->
+            <ng-container *ngIf="isImage(item.file); else videoTemplate">
+              <img [src]="item.url" alt="Evidencia Imagen" class="evidencia-imagen" (click)="openImagePreview(item)">
+            </ng-container>
+            <ng-template #videoTemplate>
+              <video [src]="item.url" controls class="evidencia-video"></video>
+            </ng-template>
+          </div>
+        </div>
+        <ng-template #noEvidencias>
+          <p class="no-evidencias">No se adjuntaron evidencias multimedia</p>
+        </ng-template>
+  
+        <!-- Evidencias de Audio -->
+        <div *ngIf="previewAudios.length > 0" class="evidencias-audio">
+          <p class="audio-title">Audios adjuntos:</p>
+          <div *ngFor="let item of previewAudios" class="evidencia-audio-item">
+            <audio [src]="item.url" controls class="audio-player"></audio>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <app-navbar
+    [currentStep]="currentStep" [totalSteps]="totalSteps" [showStepCounter]="true"
+    [denunciaSeleccionada]="isContinueButtonEnabled()" (continuar)="handleContinue()">
+  </app-navbar>
+  
+  <!-- Modal de imagen (solo para imágenes) -->
+  <div class="image-preview-modal" *ngIf="selectedImage" (click)="closeImagePreview()">
+    <img [src]="selectedImage.url" alt="Vista previa ampliada" class="image-preview">
+  </div>
+  
+  <!-- Modal de éxito -->
+  <div *ngIf="showModal" class="modal">
+    <div class="modal-content">
+      <h1>Denuncia enviada con éxito</h1>
+      <p>Tu denuncia ha sido registrada con la clave de radicado:</p>
+      <div class="clave-unica">
+        <i class='bx bx-copy-alt bx-flashing' (click)="copiarClave()"></i>
+        {{ claveUnica }}
+      </div>
+      <p>Por favor copia y guarda esta clave para futuras consultas.</p>
+      <button class="learn-more" (click)="closeModal()">Continuar</button>
+    </div>
+  </div>
+  
