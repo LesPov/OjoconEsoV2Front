@@ -27,13 +27,10 @@
 /* Contenedor fijo para la imagen para evitar cambios en el layout */
 .modal-image-container {
     width: 100%;
-<<<<<<< HEAD
     position: absolute;
     height: 500px;
     top: 75px;
-=======
     height: 500px;  /* Ajusta este valor según el espacio que desees reservar */
->>>>>>> abde89c (Actualizar endpoint de desarrollo, mejorar estilos en componentes de autenticación y agregar funcionalidad de navegación hacia atrás.)
     display: flex;
     justify-content: center;
     align-items: center;
@@ -92,11 +89,8 @@
 
 .lava-lamp {
     position: absolute;
-<<<<<<< HEAD
     top: 400px;
-=======
     margin-top: 200px;
->>>>>>> abde89c (Actualizar endpoint de desarrollo, mejorar estilos en componentes de autenticación y agregar funcionalidad de navegación hacia atrás.)
     width: 50px;
     height: 100px;
     background: #232949;
