@@ -4,10 +4,11 @@
         align-items: center;
         justify-content: center;
         width: 100%;
-        top: 20px;
         flex-direction: column;
         position: absolute;
         z-index: 1;
+            top: 30px;
+
   }
   
   .info {
@@ -26,6 +27,7 @@
 .hidden-info {
     opacity: 0;
     pointer-events: none; /* Para evitar interacción */
+    display: none !important; /* Para evitar que ocupe espacio */
   }
   .info i {
     font-size: 30px;

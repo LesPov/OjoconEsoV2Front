@@ -4,7 +4,7 @@ import { DenunciaAnonimaInterface } from '../../../admin/middleware/interfaces/d
 @Injectable({
   providedIn: 'root'
 })
-export class DenunciaStorageService {
+export class DenunciaAnonimaStorageService {
   private denuncia: Partial<DenunciaAnonimaInterface> = {};
   private pruebasFiles: File[] = [];
   private audioFiles: File[] = [];

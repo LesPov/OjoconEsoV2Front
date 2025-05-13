@@ -6,14 +6,15 @@ import { BotInfoService } from '../../../../admin/layout/utils/botInfoCliente';
 import { SubtipoDenunciaInterface } from '../../../../admin/middleware/interfaces/subtipoDenunciaInterface';
 import { TipoDenunciaInterface } from '../../../../admin/middleware/interfaces/tipoDenunciaInterface';
 import { DenunciasService } from '../../../middleware/services/denuncias.service';
-import { DenunciaStorageService } from '../../../middleware/services/denunciaStorage.service';
+import { DenunciaAnonimaStorageService } from '../../../middleware/services/denunciaStorage.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from '../navbar/navbar.component';
+import { DenunciaOficialStorageService } from '../../../middleware/services/denuncia-oficial-storage.service';
 
 @Component({
   selector: 'app-subtipos-de-denuncias',
-  imports: [FormsModule, CommonModule,NavbarComponent],
+  imports: [FormsModule, CommonModule, NavbarComponent],
   templateUrl: './subtipos-de-denuncias.component.html',
   styleUrls: ['./subtipos-de-denuncias.component.css']
 })
@@ -27,6 +28,8 @@ export class SubtiposDeDenunciasComponent implements OnInit {
   descripcionVisible: number | null = null;
   selectedDenunciaIndex: number | null = null;
   denunciaSelected: boolean = false;  // Flag para saber si se seleccionó denuncia
+  tipoDenunciaNombre: string | null = null; // Cambiado de tipoDenuncia para claridad
+  modo: 'anonima' | 'oficial' = 'anonima'; // <-- NECESITAS LEER Y GUARDAR ESTO
 
   private infosubtiposlist: string[] = [
     "Has llegado a la sección de subtipos de denuncia. Aquí puedes afinar más tu elección.",
@@ -43,39 +46,103 @@ export class SubtiposDeDenunciasComponent implements OnInit {
     private denunciasService: DenunciasService,
     private toastr: ToastrService,
     private botInfoService: BotInfoService,
-    private denunciaStorage: DenunciaStorageService
+    private denunciaAnonimaStorage: DenunciaAnonimaStorageService, // Inyectado con alias
+    private denunciaOficialStorage: DenunciaOficialStorageService  // Inyectado
+
   ) { }
 
   ngOnInit(): void {
-    // Obtenemos el nombre del tipo de denuncia desde la ruta
-    this.route.params.subscribe(params => {
-      this.tipoDenuncia = params['nombreTipoDenuncia'];
-      if (this.tipoDenuncia) {
-        this.obtenerTipoDenunciaId(this.tipoDenuncia);
+    this.route.queryParamMap.subscribe(queryParams => {
+      // 1. Leer el MODO (tipo)
+      const t = queryParams.get('tipo');
+      this.modo = t === 'oficial' ? 'oficial' : 'anonima';
+      console.log('SUBTIPOS - Modo recibido:', this.modo);
+
+      // 2. Leer el NOMBRE del tipo de denuncia padre
+      this.tipoDenunciaNombre = queryParams.get('nombreTipoDenuncia');
+      console.log('SUBTIPOS - NombreTipo recibido:', this.tipoDenunciaNombre);
+
+      if (this.tipoDenunciaNombre) {
+        // Si tenemos nombre, buscamos su ID para poder filtrar subtipos
+        this.obtenerTipoDenunciaIdYSubtipos(this.tipoDenunciaNombre);
+      } else {
+        this.toastr.error('No se especificó el tipo de denuncia padre.', 'Error de Navegación');
+        console.error("SUBTIPOS - Falta queryParam 'nombreTipoDenuncia'");
+        // Considera redirigir si falta un dato esencial
+        // this.router.navigate(['/body/tipos_de_denuncia'], { queryParams: { tipo: this.modo }, queryParamsHandling: 'merge' });
       }
     });
+
     this.botInfoService.setInfoList(this.infosubtiposlist);
   }
 
+  /**
+    * Obtiene el ID del tipo por nombre y luego carga los subtipos filtrados.
+    */
+  obtenerTipoDenunciaIdYSubtipos(nombreTipo: string): void {
+    // Usamos getTiposDenuncia con el modo correcto para encontrar el ID
+    this.denunciasService.getTiposDenuncia(this.modo).subscribe({
+      next: tipos => {
+        const encontrado = tipos.find(t => t.nombre === nombreTipo);
+        if (!encontrado || typeof encontrado.id === 'undefined') {
+          this.toastr.error(`Tipo de denuncia llamado "${nombreTipo}" no encontrado para el modo "${this.modo}".`, 'Error');
+          console.error(`Tipo "${nombreTipo}" no hallado en:`, tipos);
+          this.subtipos = []; // Limpiar subtipos si no se encuentra el padre
+          return;
+        }
+        this.tipoDenunciaId = encontrado.id;
+        console.log(`SUBTIPOS - ID encontrado para "${nombreTipo}": ${this.tipoDenunciaId}`);
+        // Ahora que tenemos el ID, filtramos los subtipos
+        this.obtenerSubtiposFiltrados(this.tipoDenunciaId);
+      },
+      error: err => {
+        console.error("Error fetching tipos para buscar ID:", err);
+        this.toastr.error('Error al verificar el tipo de denuncia padre.', 'Error de Red');
+      }
+    });
+  }
+  /**
+  * Obtiene TODOS los subtipos y luego filtra por el tipoDenunciaId.
+  */
+  obtenerSubtiposFiltrados(tipoId: number): void {
+    this.denunciasService.getSubtiposDenuncia().subscribe({
+      next: (todosLosSubtipos) => {
+        this.subtipos = todosLosSubtipos.filter(subtipo => subtipo.tipoDenunciaId === tipoId);
+        console.log(`SUBTIPOS - Filtrados para tipoId ${tipoId}:`, this.subtipos);
+        if (this.subtipos.length === 0) {
+          this.toastr.info(`No se encontraron subtipos específicos para "${this.tipoDenunciaNombre}".`);
+        }
+        this.pulsingStates = new Array(this.subtipos.length).fill(true);
+        // Reiniciar selección si cambian los subtipos
+        this.selectedDenunciaIndex = null;
+        this.descripcionVisible = null;
+      },
+      error: (err) => {
+        this.toastr.error('Error al obtener los subtipos de denuncia.', 'Error de Red');
+        console.error("Error fetching subtipos:", err);
+        this.subtipos = []; // Limpiar en caso de error
+      }
+    });
+  }
   /**
    * Obtiene el id del tipo de denuncia a partir del nombre.
    * Se consulta la lista de tipos y se filtra por el nombre.
    */
   obtenerTipoDenunciaId(nombreTipo: string): void {
-    this.denunciasService.getTiposDenunciaAnonimas().subscribe({
-      next: (tipos: TipoDenunciaInterface[]) => {
-        const tipoEncontrado = tipos.find(tipo => tipo.nombre === nombreTipo);
-        if (tipoEncontrado) {
-          this.tipoDenunciaId = tipoEncontrado.id;
-          // Una vez obtenido el id, se filtran los subtipos
-          this.obtenerSubtiposPorTipoId(this.tipoDenunciaId);
-        } else {
+    // 2) Usamos getTiposDenuncia con el modo correcto
+    this.denunciasService.getTiposDenuncia(this.modo).subscribe({
+      next: tipos => {
+        const encontrado = tipos.find(t => t.nombre === nombreTipo);
+        if (!encontrado) {
           this.toastr.error('Tipo de denuncia no encontrado', 'Error');
+          return;
         }
+        this.tipoDenunciaId = encontrado.id;
+        this.obtenerSubtiposPorTipoId(this.tipoDenunciaId);
       },
-      error: (err) => {
-        this.toastr.error('Error al obtener el tipo de denuncia', 'Error');
+      error: err => {
         console.error(err);
+        this.toastr.error('Error al obtener los tipos de denuncia', 'Error');
       }
     });
   }
@@ -145,20 +212,48 @@ export class SubtiposDeDenunciasComponent implements OnInit {
     }
   }
 
-  handleContinue(): void {
+handleContinue(): void {
     if (this.selectedDenunciaIndex === null) {
-      this.toastr.error('Por favor, selecciona una denuncia para continuar.', 'Error');
+      this.toastr.error('Por favor, selecciona un subtipo de denuncia para continuar.', 'Error');
       return;
     }
 
-    // Obtener el nombre del subtipo seleccionado
-    const selectedSubtipo = this.subtipos[this.selectedDenunciaIndex];
-    if (selectedSubtipo) {
-      // Guardar en el storage
-      this.denunciaStorage.setSubtipoDenuncia(selectedSubtipo.nombre);
-      // Navegar
-      this.router.navigate(['/body/evidencia', { nombreSubTipoDenuncia: selectedSubtipo.nombre }]);
+    const selectedSubtipo = this.subtipos[this.selectedDenunciaIndex!]; // Usar '!' si estás seguro que no será null
+    if (!selectedSubtipo) {
+      this.toastr.error('Error al obtener el subtipo seleccionado.', 'Error Interno');
+      return;
     }
+
+    if (!this.modo) {
+      console.error("SUBTIPOS - Error crítico: Falta 'modo' ('tipo') para navegar a Evidencia.");
+      this.toastr.error("Error interno al procesar el tipo de denuncia.");
+      return;
+    }
+
+    // --- LÓGICA PARA SELECCIONAR EL STORAGE ---
+    if (this.modo === 'oficial') {
+      this.denunciaOficialStorage.setSubtipoDenuncia(selectedSubtipo.nombre);
+      console.log(`SUBTIPOS - Guardado en OFICIAL Storage: ${selectedSubtipo.nombre}`);
+    } else {
+      // Por defecto o si this.modo es 'anonima'
+      this.denunciaAnonimaStorage.setSubtipoDenuncia(selectedSubtipo.nombre);
+      console.log(`SUBTIPOS - Guardado en ANÓNIMA Storage: ${selectedSubtipo.nombre}`);
+    }
+    // -----------------------------------------
+
+    console.log(`SUBTIPOS - Navegando a Evidencia. Modo actual: ${this.modo}, Subtipo Seleccionado: ${selectedSubtipo.nombre}`);
+
+    this.router.navigate(
+      ['/body/evidencia'],
+      {
+        queryParams: {
+          tipo: this.modo,                      // Pasar el modo actual
+          nombreSubtipo: selectedSubtipo.nombre // Pasar el nombre del subtipo
+          // Opcional: nombreTipo: this.tipoDenunciaNombre si Evidencia lo necesita
+        },
+        queryParamsHandling: 'merge'
+      }
+    );
   }
 
   stopPulse(index: number): void {

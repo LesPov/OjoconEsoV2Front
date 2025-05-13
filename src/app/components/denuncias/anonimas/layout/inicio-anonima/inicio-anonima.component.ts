@@ -2,53 +2,71 @@ import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { BotInfoService } from '../../../../admin/layout/utils/botInfoCliente';
-import { Location } from '@angular/common';
+import { Location, CommonModule } from '@angular/common';
+
+interface InfoBlock {
+  heading: string;
+  description: string;
+  icons: string[];
+}
 
 @Component({
   selector: 'app-inicio-anonima',
-  imports: [],
+  standalone: true,
+  imports: [ CommonModule ],
   templateUrl: './inicio-anonima.component.html',
   styleUrls: ['./inicio-anonima.component.css']
 })
 export class InicioAnonimaComponent {
-  @HostListener('window:scroll', []) 
+  @HostListener('window:scroll', [])
   onWindowScroll() {
     this.handleScrollUpVisibility();
   }
-  
-  public infoListInicioAnonima: string[] = [ 
-    "Como denunciar anonimamente",
-    "En esta sección puedes realizar denuncias de forma anónima. Recuerda que una denuncia anónima te permite reportar situaciones sin revelar tu identidad, protegiendo así tu seguridad.",
-    "Te guiaremos paso a paso en el proceso para que puedas completar toda la información necesaria.",
-    "Recuerda que el proceso incluye varias etapas, como seleccionar el tipo de denuncia, agregar evidencias, indicar la ubicación del incidente, entre otras.",
+
+  /** Reemplazamos infoListInicioAnonima con infoBlocks */
+  public infoBlocks: InfoBlock[] = [
+    {
+      heading: '¿Cómo denunciar anónimamente?',
+      description: 'En esta sección puedes realizar denuncias de forma anónima. Recuerda que una denuncia anónima te permite reportar situaciones sin revelar tu identidad, protegiendo así tu seguridad.',
+      icons: [
+        'https://cdn.prod.website-files.com/64c73d04a946980a4476537e/64d455088454ba4abb0cf9cc_Late%20for%20Class.svg'
+      ]
+    },
+    {
+      heading: 'Proceso guiado',
+      description: 'Te guiaremos paso a paso en el proceso para que puedas completar toda la información necesaria.',
+      icons: [
+        'https://cdn.prod.website-files.com/64c73d04a946980a4476537e/64d456bfc7f9c0552d104382_Gamestation.svg'
+      ]
+    },
+    {
+      heading: 'Etapas del reporte',
+      description: 'Recuerda que el proceso incluye varias etapas, como seleccionar el tipo de denuncia, agregar evidencias, indicar la ubicación del incidente, entre otras.',
+      icons: [
+        'https://cdn.prod.website-files.com/64c73d04a946980a4476537e/64d452e5aed374e1f7ce8cac_Reflecting.svg'
+      ]
+    }
   ];
 
   constructor(
     private router: Router,
     private toastr: ToastrService,
-    private location: Location,
-
-    private botInfoService: BotInfoService
-  ) { }
-  
-  // Método opcional que muestra un mensaje y, además, el bot ya se invocará desde el header.
-  showwarnig(): void {
-    this.toastr.warning('En próximas actualizaciones se agregará.', 'Warning');
-  }
+    private botInfoService: BotInfoService,
+    private location: Location
+  ) {}
 
   ngOnInit(): void {
-    // Se establece la lista de información
-    this.botInfoService.setInfoList(this.infoListInicioAnonima);
-    // Se suscribe para recibir el índice emitido y hacer scroll al párrafo correspondiente
-    this.botInfoService.getScrollIndex().subscribe(index => {
-      this.scrollToParagraph(index);
-    });
+    // Enviamos al bot la lista de headings+descripciones
+    this.botInfoService.setInfoList(
+      this.infoBlocks.map(b => `${b.heading}: ${b.description}`)
+    );
+    this.botInfoService.getScrollIndex().subscribe(i => this.scrollToParagraph(i));
   }
 
   scrollToParagraph(index: number): void {
-    const paragraphs = document.querySelectorAll('p');
-    if (paragraphs[index]) {
-      paragraphs[index].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const items = document.querySelectorAll('.info_item p');
+    if (items[index]) {
+      (items[index] as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }
 
@@ -56,40 +74,44 @@ export class InicioAnonimaComponent {
     this.router.navigate(['/body/consultas']);
   }
 
-  goToCrear() {
-    this.router.navigate(['/body/tipos_de_denuncia']);
+ goToCrear() {
+  // Navega a tipos_de_denuncia con query param tipo=anonima
+  this.router.navigate(
+    ['/body/tipos_de_denuncia'],
+    { queryParams: { tipo: 'anonima' } }
+  );
+}
+
+
+  showWarning(): void {
+    this.toastr.warning('En próximas actualizaciones se agregará.', 'Warning');
   }
 
   private handleScrollUpVisibility(): void {
-    const scrollUpElement = document.getElementById('scroll-up');
-    if (scrollUpElement) {
-      if (window.scrollY >= 560) {
-        scrollUpElement.classList.add('show-scroll');
-        scrollUpElement.classList.remove('scrollup--inactive');
-      } else {
-        scrollUpElement.classList.remove('show-scroll');
-        scrollUpElement.classList.add('scrollup--inactive');
-      }
+    const up = document.getElementById('scroll-up');
+    if (!up) return;
+    if (window.scrollY >= 560) {
+      up.classList.add('show-scroll');
+      up.classList.remove('scrollup--inactive');
+    } else {
+      up.classList.remove('show-scroll');
+      up.classList.add('scrollup--inactive');
     }
   }
-  
+
   scrollToTop(): void {
-    const scrollStep = -window.scrollY / 20;
-    const scrollInterval = setInterval(() => {
+    const step = -window.scrollY / 20;
+    const iv = setInterval(() => {
       if (window.scrollY !== 0) {
-        window.scrollBy(0, scrollStep);
+        window.scrollBy(0, step);
       } else {
-        clearInterval(scrollInterval);
-        const scrollUpElement = document.getElementById('scroll-up');
-        if (scrollUpElement) {
-          scrollUpElement.classList.add('scrollup--inactive');
-        }
+        clearInterval(iv);
+        document.getElementById('scroll-up')?.classList.add('scrollup--inactive');
       }
     }, 16);
   }
-   // Método para volver
-   goBack(): void {
+
+  goBack(): void {
     this.location.back();
   }
-  
 }

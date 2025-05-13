@@ -1,10 +1,11 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import * as L from 'leaflet';
 import { ToastrService } from 'ngx-toastr';
 import { BotInfoService } from '../../../../admin/layout/utils/botInfoCliente';
-import { DenunciaStorageService } from '../../../middleware/services/denunciaStorage.service';
+import { DenunciaAnonimaStorageService } from '../../../middleware/services/denunciaStorage.service';
 import { NavbarComponent } from '../navbar/navbar.component';
+import { DenunciaOficialStorageService } from '../../../middleware/services/denuncia-oficial-storage.service';
 
 @Component({
   selector: 'app-ubicacion',
@@ -17,11 +18,12 @@ export class UbicacionComponent implements OnInit, AfterViewInit, OnDestroy {
   totalSteps = 3;
   private map!: L.Map;
   private marker: L.Marker | null = null;
-  selectedLocation: { lat: number; lng: number } | null = null; 
+  selectedLocation: { lat: number; lng: number } | null = null;
   // Dirección a mostrar con información detallada
   direccionSeleccionada: string = '';
   isLoading: boolean = false;
-
+  modo: 'anonima' | 'oficial' = 'anonima';
+  queryParams: any = {};
   // Lista de mensajes de ayuda
   private infoUbicacion: string[] = [
     "Bienvenido a la sección de selección de ubicación.",
@@ -33,13 +35,29 @@ export class UbicacionComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private router: Router,
     private toastr: ToastrService,
-    private denunciaStorage: DenunciaStorageService,
-    private botInfoService: BotInfoService
+    private denunciaAnonimaStorage: DenunciaAnonimaStorageService,
+    private denunciaOficialStorage: DenunciaOficialStorageService,
+    private botInfoService: BotInfoService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
-    this.botInfoService.setInfoList(this.infoUbicacion);
+    // Lee una vez por snapshot…
+    const snapshot = this.route.snapshot.queryParamMap;
+    this.queryParams = {
+      tipo: snapshot.get('tipo') || 'anonima',
+      nombreTipoDenuncia: snapshot.get('nombreTipoDenuncia'),
+      nombreSubtipoDenuncia: snapshot.get('nombreSubtipoDenuncia')
+    };
+    this.modo = this.queryParams.tipo === 'oficial' ? 'oficial' : 'anonima';
+
+    // …y suscríbete para reaccionar si cambian luego
+    this.route.queryParamMap.subscribe(qp => {
+      this.queryParams.tipo = qp.get('tipo') || this.queryParams.tipo;
+      // (y así sucesivamente si quieres reaccionar dinámicamente)
+    });
   }
+
 
   ngAfterViewInit() {
     this.requestUserLocation();
@@ -118,7 +136,7 @@ export class UbicacionComponent implements OnInit, AfterViewInit, OnDestroy {
       const calle = road || pedestrian || 'Calle desconocida';
       const numero = house_number || '';
       // Puedes asignar "carrera" si encuentras un campo adecuado; aquí lo dejamos vacío.
-      const carrera = ''; 
+      const carrera = '';
       // Barrio y localidad
       const barrio = neighbourhood || '';
       const localidad = suburb || '';
@@ -139,13 +157,44 @@ export class UbicacionComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+ // --- MÉTODO handleContinue MODIFICADO ---
   handleContinue(): void {
     if (!this.selectedLocation) {
       this.toastr.error('Por favor, selecciona una ubicación en el mapa');
       return;
     }
-    this.denunciaStorage.setDireccion(this.direccionSeleccionada);
-    this.router.navigate(['/body/resumen']);
+
+    // Asegurarse de que 'modo' tiene un valor válido.
+    if (!this.modo) {
+        console.error("UBICACION - Error Crítico: Falta 'modo'. No se puede guardar la dirección.");
+        this.toastr.error("Error interno al procesar la denuncia.");
+        return;
+    }
+
+    // 1. Lógica para seleccionar el servicio de storage y guardar la dirección
+    if (this.modo === 'oficial') {
+      this.denunciaOficialStorage.setDireccion(this.direccionSeleccionada);
+      console.log('UBICACION - Dirección guardada en OFICIAL Storage:', this.direccionSeleccionada);
+    } else { // Asumir 'anonima' si no es 'oficial'
+      this.denunciaAnonimaStorage.setDireccion(this.direccionSeleccionada);
+      console.log('UBICACION - Dirección guardada en ANÓNIMA Storage:', this.direccionSeleccionada);
+    }
+
+    // 2. Navegación (tu lógica de navegación basada en 'modo' ya es correcta)
+    console.log(`UBICACION - Navegando. Modo actual: ${this.modo}`);
+    if (this.modo === 'oficial') {
+      this.router.navigate(['/body/registroOficial'], { // Ruta absoluta es más clara aquí
+        // relativeTo: this.route, // No necesitas relativeTo si usas ruta absoluta
+        queryParams: this.queryParams, // Pasa todos los queryParams acumulados
+        queryParamsHandling: 'merge' // Conserva cualquier otro queryParam que pudiera existir
+      });
+    } else {
+      this.router.navigate(['/body/resumen'], { // Ruta absoluta
+        // relativeTo: this.route,
+        queryParams: this.queryParams,
+        queryParamsHandling: 'merge'
+      });
+    }
   }
 
   ngOnDestroy() {

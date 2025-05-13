@@ -1,0 +1,24 @@
+<div class="denuncias_oficial">
+    <!-- Sección Informativa -->
+    <section class="info_section">
+        <p id="info1">{{ infoBlocks[0].heading }}</p>
+
+        <div class="info_item" *ngFor="let block of infoBlocks; let i = index" [id]="'info' + (i + 2)">
+            <!-- Solo mostramos el <img> si hay URL en icons[0] -->
+            <img *ngIf="block.icons.length > 0" [src]="block.icons[0]" alt="Ícono Informativo"
+                class="icon a{{ (i % 3) + 1 }}" />
+            <p>{{ block.description }}</p>
+        </div>
+
+        <a class="scrollup scrollup--inactive" id="scroll-up" (click)="scrollToTop()">
+            <i class="bx bx-up-arrow-alt scrollup__icon"></i>
+        </a>
+
+    </section>
+
+    <div class="container_content">
+        <button class="learn-more" (click)="goToConsulta()">Consultar</button>
+        <button class="learn-more" (click)="goToCrear()">Crear denuncia oficial</button>
+        <button class="sabermas" (click)="goBack()">Ver más</button>
+    </div>
+</div>

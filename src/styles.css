@@ -9,15 +9,37 @@
     border: none;
   }
 
+   
   
-  /* Define alturas fijas para header y navbar */
-  app-header {
-    height: 42px; /* o la altura que tengas definida */
-    flex-shrink: 0;
-  }
-  
-  app-navbar {
-    height: 70px; /* según tu CSS */
-    flex-shrink: 0;
-  }
-  
+html{
+    overflow-y: auto;
+    scrollbar-width: none;
+
+}
+
+:root {
+    /* ///header//// */
+    --background_header: #1d1c49;
+    --background_body: #ffffff;
+
+
+}
+
+
+
+/* //////////// Dark Tema ///////////////////// */
+body.dark-theme {
+
+    --background_header: #1d1c49;
+    --background_body: #000000;
+
+
+
+
+
+    /* //////////////header//////////// */
+
+
+    /* ///////////////////////about/////////////// */
+
+}

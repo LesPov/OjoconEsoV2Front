@@ -17,8 +17,11 @@ export class InicioComponent {
   modalTitle: string = '';
   callUrl: string = '';
   navigateRoute: string = '';
+  showWelcomeComponent: boolean = true; // Configura según tu lógica
 
-  constructor(private router: Router, private toastr: ToastrService) { }
+  constructor(private router: Router,
+    private toastr: ToastrService,
+  ) { }
 
   openModal(title: string, callUrl: string, route: string): void {
     this.currentModal = title;
@@ -26,19 +29,17 @@ export class InicioComponent {
     this.callUrl = callUrl;
     this.navigateRoute = route;
   }
-  
   showwarnig(): void {
     this.toastr.warning('En próximas actualizaciones se agregará.', 'Warning');
   }
-  
   closeModal(): void {
     this.currentModal = null;
   }
-  
+
   makeCall(): void {
     window.location.href = this.callUrl;
   }
-  
+
   navigateToRoute(): void {
     if (this.navigateRoute) {
       this.router.navigate([this.navigateRoute]);

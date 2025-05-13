@@ -25,6 +25,8 @@
 .hidden-info {
     opacity: 0;
     pointer-events: none; /* Para evitar interacción */
+      display: none !important;
+
   }
   
   img {

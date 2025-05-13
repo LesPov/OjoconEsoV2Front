@@ -1,4 +1,4 @@
-.denuncias_anonimas {
+.denuncias_oficial {
     display: flex;
     align-items: center;
     width: 100%;
@@ -63,20 +63,9 @@ h1 {
     transform-origin: center;
 }
 
-.a1 {
 
-    filter: drop-shadow(0px 0px 10px rgb(115, 0, 125));
-}
 
-.a2 {
 
-    filter: drop-shadow(0px 0px 10px rgb(3, 0, 187));
-}
-
-.a3 {
-
-    filter: drop-shadow(0px 0px 10px rgb(0, 151, 0));
-}
 
 .info_item p {
     text-align: center;

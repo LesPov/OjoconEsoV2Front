@@ -1,0 +1,77 @@
+<div class="container registro-container">
+  <h2>Registro de Datos del Denunciante</h2>
+  <p class="subtitulo">Por favor, completa tu información personal para la denuncia oficial.</p>
+
+  <form [formGroup]="registroForm"  >
+    <!-- Tipo de Identificación -->
+    <div class="form-group">
+      <label for="tipoIdentificacion">Tipo de Identificación <span class="required">*</span></label>
+      <select id="tipoIdentificacion" formControlName="tipoIdentificacionDenunciante" class="form-control">
+        <option value="" disabled>Selecciona un tipo</option>
+        <option *ngFor="let tipo of tiposIdentificacion" [value]="tipo.valor">
+          {{ tipo.etiqueta }}
+        </option>
+      </select>
+      <div *ngIf="f['tipoIdentificacionDenunciante'].invalid && (f['tipoIdentificacionDenunciante'].dirty || f['tipoIdentificacionDenunciante'].touched)" class="error-message">
+        <div *ngIf="f['tipoIdentificacionDenunciante'].errors?.['required']">El tipo de identificación es requerido.</div>
+      </div>
+    </div>
+
+    <!-- Número de Identificación -->
+    <div class="form-group">
+      <label for="numeroIdentificacion">Número de Identificación <span class="required">*</span></label>
+      <input type="text" id="numeroIdentificacion" formControlName="numeroIdentificacionDenunciante" class="form-control" placeholder="Ingresa tu número de documento">
+      <div *ngIf="f['numeroIdentificacionDenunciante'].invalid && (f['numeroIdentificacionDenunciante'].dirty || f['numeroIdentificacionDenunciante'].touched)" class="error-message">
+        <div *ngIf="f['numeroIdentificacionDenunciante'].errors?.['required']">El número de identificación es requerido.</div>
+        <div *ngIf="f['numeroIdentificacionDenunciante'].errors?.['pattern']">Solo se permiten números.</div>
+      </div>
+    </div>
+
+    <!-- Nombres -->
+    <div class="form-group">
+      <label for="nombres">Nombres <span class="required">*</span></label>
+      <input type="text" id="nombres" formControlName="nombreDenunciante" class="form-control" placeholder="Ingresa tus nombres">
+      <div *ngIf="f['nombreDenunciante'].invalid && (f['nombreDenunciante'].dirty || f['nombreDenunciante'].touched)" class="error-message">
+        <div *ngIf="f['nombreDenunciante'].errors?.['required']">Tus nombres son requeridos.</div>
+      </div>
+    </div>
+
+    <!-- Apellidos -->
+    <div class="form-group">
+      <label for="apellidos">Apellidos <span class="required">*</span></label>
+      <input type="text" id="apellidos" formControlName="apellidoDenunciante" class="form-control" placeholder="Ingresa tus apellidos">
+      <div *ngIf="f['apellidoDenunciante'].invalid && (f['apellidoDenunciante'].dirty || f['apellidoDenunciante'].touched)" class="error-message">
+        <div *ngIf="f['apellidoDenunciante'].errors?.['required']">Tus apellidos son requeridos.</div>
+      </div>
+    </div>
+
+    <!-- Fecha de Nacimiento -->
+    <div class="form-group">
+      <label for="fechaNacimiento">Fecha de Nacimiento (Opcional)</label>
+      <input type="date" id="fechaNacimiento" formControlName="fechaNacimientoDenunciante" class="form-control">
+      <!-- Podrías añadir validación de formato si es necesario -->
+    </div>
+
+    <!-- Denuncia en Nombre de Tercero -->
+    <div class="form-group checkbox-group">
+      <input type="checkbox" id="denunciaEnNombreDeTercero" formControlName="denunciaEnNombreDeTercero" class="form-check-input">
+      <label for="denunciaEnNombreDeTercero" class="form-check-label">¿Realiza esta denuncia en nombre de otra persona?</label>
+    </div>
+
+    <!-- Botón de Envío (se maneja a través del Navbar) -->
+  </form>
+
+   
+ 
+
+</div>
+
+<!-- Navbar para navegación y botón de envío -->
+<app-navbar
+  [currentStep]="currentStep"
+  [totalSteps]="totalSteps"
+  [showStepCounter]="true"
+  [denunciaSeleccionada]="registroForm.valid"
+  (retroceder)="goBack()"
+  (continuar)="handleContinue()"> <!-- <--- AÑADIR ESTO -->
+</app-navbar>

@@ -83,7 +83,7 @@ export class DenunciasComponent implements OnInit {
 
   // Métodos para Tipos de Denuncia
   loadTiposDenuncias(): void {
-    this.denunciasService.getTiposDenunciaAnonimas().subscribe({
+    this.denunciasService.getTiposDenuncia().subscribe({
       next: (data: TipoDenunciaInterface[]) => {
         this.allTipos = data;
         this.tiposDenuncias = data;

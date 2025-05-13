@@ -4,7 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { BotInfoService } from '../../../../admin/layout/utils/botInfoCliente';
 import { DenunciaAnonimaInterface } from '../../../../admin/middleware/interfaces/denunciasAnonimasInterface';
 import { DenunciasService } from '../../../middleware/services/denuncias.service';
-import { DenunciaStorageService } from '../../../middleware/services/denunciaStorage.service';
+import { DenunciaAnonimaStorageService } from '../../../middleware/services/denunciaStorage.service';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../navbar/navbar.component';
 
@@ -45,7 +45,7 @@ export class ResumenComponent implements OnInit {
   ];
 
   constructor(
-    private denunciaStorageService: DenunciaStorageService,
+    private denunciaAnonimaStorage: DenunciaAnonimaStorageService, // Correcto, solo el de anónimas
     private botInfoService: BotInfoService,
     private denunciasService: DenunciasService,
     private router: Router,
@@ -54,9 +54,9 @@ export class ResumenComponent implements OnInit {
 
   ngOnInit(): void {
     // Obtener los datos de la denuncia del servicio de almacenamiento
-    this.datosResumen = this.denunciaStorageService.getDenuncia();
-    this.pruebas = this.denunciaStorageService.getPruebasFiles();
-    this.audios = this.denunciaStorageService.getAudioFiles();
+    this.datosResumen = this.denunciaAnonimaStorage.getDenuncia();
+    this.pruebas = this.denunciaAnonimaStorage.getPruebasFiles();
+    this.audios = this.denunciaAnonimaStorage.getAudioFiles();
 
     // Generar las URL de vista previa para cada archivo multimedia (imágenes y videos)
     this.previewPruebas = this.pruebas.map(file => ({
@@ -129,7 +129,7 @@ export class ResumenComponent implements OnInit {
 
   closeModal(): void {
     this.showModal = false;
-    this.denunciaStorageService.resetDenuncia();
+    this.denunciaAnonimaStorage.resetDenuncia();
     this.router.navigate(['/exito']);
   }
 

@@ -25,7 +25,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private router: Router, 
     private location: Location,
     private activatedRoute: ActivatedRoute, 
-    private elementRef: ElementRef,
+    private elementRef: ElementRef, 
     private botInfoService: BotInfoService
   ) {}
 
@@ -87,13 +87,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   // Función para activar el bot de voz al hacer clic en el ícono
+ /** ← Cambiado: dispara lectura + scroll en un solo paso */
   speakBot(): void {
     if (this.botInfoService.isSpeakingNow()) {
       this.botInfoService.cancelSpeak();
     } else {
-      const info = this.botInfoService.getNextInfo();
-      this.botInfoService.speak(info)
-        .catch((error) => console.error('Error en el bot:', error));
+      this.botInfoService.speakNextAndScroll()
+        .catch(err => console.error('Error en el bot:', err));
     }
   }
   

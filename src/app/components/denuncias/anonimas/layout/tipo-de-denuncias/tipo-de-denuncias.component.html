@@ -1,52 +1,46 @@
 <div class="container">
-    <!-- Sección de información -->
-    <div class="info" [class.hidden-info]="selectedDenunciaIndex !== null">
-      <i class='bx bx-error-circle'></i>
-      <p>Selecciona el tipo de denuncia</p>
-    </div>
-   
-    <!-- Lista de denuncias -->
-    <div class="content" *ngIf="tiposDenunciasAnonimas.length > 0; else noData">
-      <p>¿Qué quieres denunciar?</p>
-      <ul>
-        <li *ngFor="let tipo of tiposDenunciasAnonimas; let i = index" class="denuncia-item"
-            [class.selected]="selectedDenunciaIndex === i">
-          <div class="denuncia-header" (click)="toggleDescripcion(i)">
-            <span>
-              <!-- Imagen: llama a speakDenuncia y evita la propagación -->
-              <img (click)="speakDenuncia(i); $event.stopPropagation()"
-                   [src]="getImageUrl(tipo.flagImage)"
-                   alt="Ícono de denuncia"
-                   class="denuncia-icon"
-                   [class.no-pulse]="!isPulsing(i)">
-              <div class="nombre">
-                {{ tipo.nombre }} <i class='bx bx-info-circle'></i>
-              </div>
-            </span>
-            <!-- Checkbox para seleccionar la denuncia -->
-            <input type="checkbox" class="ui-checkbox"
-                   [checked]="selectedDenunciaIndex === i"
-                   (change)="selectDenuncia(i)">
-          </div>
-          <!-- Descripción -->
-          <div *ngIf="descripcionVisible === i" class="descripcion">
-            {{ tipo.descripcion }}
-          </div>
-        </li>
-      </ul>
-    </div>
-  
-    <!-- Botón para subir la página -->
-    <a class="scrollup" id="scroll-up" (click)="scrollToTop()">
-      <i class='bx bx-up-arrow-alt scrollup__icon'></i>
-    </a>
+  <div class="info" [class.hidden-info]="selectedDenunciaIndex !== null">
+    <i class='bx bx-error-circle'></i>
+    <p>Selecciona el tipo de denuncia {{ modo === 'oficial' ? 'oficial' : 'anónima' }}</p>
   </div>
-  
+
+  <div class="content" *ngIf="tiposDenuncias.length; else noData">
+    <p>¿Qué quieres denunciar?</p>
+    <ul>
+      <li *ngFor="let t of tiposDenuncias; let i = index"
+          class="denuncia-item" [class.selected]="selectedDenunciaIndex === i">
+        <div class="denuncia-header" (click)="toggleDescripcion(i)">
+          <span>
+            <img (click)="speakDenuncia(i); $event.stopPropagation()"
+                 [src]="getImageUrl(t.flagImage)"
+                 alt="Icono"
+                 class="denuncia-icon"
+                 [class.no-pulse]="!isPulsing(i)">
+            <div class="nombre">
+              {{ t.nombre }} <i class='bx bx-info-circle'></i>
+            </div>
+          </span>
+        <input type="checkbox" class="ui-checkbox" [checked]="selectedDenunciaIndex === i"
+            (change)="selectDenuncia(i)">
+        </div>
+        <div *ngIf="descripcionVisible===i" class="descripcion">
+          {{ t.descripcion }}
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <a class="scrollup scrollup--inactive" id="scroll-up"
+     (click)="scrollToTop()">
+    <i class='bx bx-up-arrow-alt scrollup__icon'></i>
+  </a>
+
   <ng-template #noData>
-    <p>No hay denuncias anónimas o de ambas categorías disponibles.</p>
+    <p>No hay tipos de denuncia disponibles.</p>
   </ng-template>
-  
-  <!-- Componente Navbar -->
-  <app-navbar
-  [denunciaSeleccionada]="selectedDenunciaIndex !== null" [showDots]="true" (continuar)="handleContinue()">
-</app-navbar>
+
+  <app-navbar [denunciaSeleccionada]="selectedDenunciaIndex!==null"
+              [showDots]="true"
+              (continuar)="handleContinue()">
+  </app-navbar>
+</div>

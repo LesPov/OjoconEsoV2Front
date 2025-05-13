@@ -2,17 +2,18 @@ import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { BotInfoService } from '../../../../admin/layout/utils/botInfoCliente';
-import { DenunciaStorageService } from '../../../middleware/services/denunciaStorage.service';
+import { DenunciaAnonimaStorageService } from '../../../middleware/services/denunciaStorage.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from '../navbar/navbar.component';
+import { DenunciaOficialStorageService } from '../../../middleware/services/denuncia-oficial-storage.service';
 
 interface MultimediaItem {
   file: File;
   url: string;
 }
 
-@Component({ 
+@Component({
   selector: 'app-evidencia',
   imports: [FormsModule, CommonModule, NavbarComponent],
   templateUrl: './evidencia.component.html',
@@ -39,7 +40,7 @@ export class EvidenciaComponent implements OnInit, OnDestroy {
   showCamera = false;
   videoStream: MediaStream | null = null;
   videoElement: HTMLVideoElement | null = null;
-
+  tipoDenunciaActual: string | null = null; // <--- NUEVA PROPIEDAD para guardar el tipo
   // Límites de archivos
   readonly MAX_TOTAL_FILES = 10;
   readonly MAX_CAMERA_FILES = 5;
@@ -65,17 +66,34 @@ export class EvidenciaComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private denunciaStorage: DenunciaStorageService,
+    private denunciaAnonimaStorage: DenunciaAnonimaStorageService,
+    private denunciaOficialStorage: DenunciaOficialStorageService,
     private toastr: ToastrService,
     private cdr: ChangeDetectorRef,
     private botInfoService: BotInfoService
   ) { }
 
   ngOnInit(): void {
+    // Leer el subtipo (parece que viene de los parámetros de ruta, no query)
     this.route.paramMap.subscribe(params => {
+      // OJO: Verifica si 'nombreSubTipoDenuncia' es realmente un param (:nombreSubTipoDenuncia en la ruta)
+      // Si también es un queryParam, usa queryParamMap abajo.
       this.subtipoDenuncia = params.get('nombreSubTipoDenuncia');
+      console.log('EVIDENCIA - Subtipo (de paramMap):', this.subtipoDenuncia);
     });
-    // Asignar la lista de mensajes al bot
+
+    // --- LEER EL PARÁMETRO 'tipo' DE LA QUERY STRING ---
+    this.route.queryParamMap.subscribe(queryParams => {
+      this.tipoDenunciaActual = queryParams.get('tipo');
+      console.log('EVIDENCIA - Tipo de denuncia (de queryParamMap):', this.tipoDenunciaActual); // Para depurar
+      if (!this.tipoDenunciaActual) {
+        console.warn("EVIDENCIA - No se recibió el parámetro 'tipo' en la URL.");
+        // Podrías asignar un valor por defecto si es necesario, aunque lo ideal es que siempre llegue
+        // this.tipoDenunciaActual = 'anonima';
+      }
+    });
+    // -----------------------------------------------------
+
     this.botInfoService.setInfoList(this.infoEvidenciaList);
   }
 
@@ -155,7 +173,7 @@ export class EvidenciaComponent implements OnInit, OnDestroy {
       this.handleCameraError(error);
     }
   }
-  
+
   private checkPhotoLimits(): boolean {
     if (!this.canTakeMorePhotos()) {
       this.displayLimitError();
@@ -423,7 +441,9 @@ export class EvidenciaComponent implements OnInit, OnDestroy {
     return file.type.startsWith('video/');
   }
 
+  // --- MÉTODO handleContinue MODIFICADO ---
   handleContinue(): void {
+    // 1. Validaciones existentes
     if (this.descripcion.trim().length === 0) {
       this.toastr.error('Debes ingresar una descripción para continuar');
       return;
@@ -432,22 +452,52 @@ export class EvidenciaComponent implements OnInit, OnDestroy {
       this.toastr.error(`La descripción debe contener al menos ${this.minimumWords} palabras`);
       return;
     }
+
+    // 2. Preparar archivos de audio
     let audioFiles: File[] = [];
     if (this.audioBlob) {
       const audioFile = new File([this.audioBlob], `${Date.now()}-audio.wav`, { type: 'audio/wav' });
       audioFiles.push(audioFile);
     }
-    // Extraer solo los File de cada MultimediaItem
-    const multimediaFiles = this.selectedMultimedia.map(item => item.file);
-    this.denunciaStorage.setDescripcionPruebas(
-      this.descripcion,
-      multimediaFiles,
-      audioFiles
-    );
-    this.router.navigate(['/body/ubicacion']);
-  }
 
+    // 3. Extraer solo los File de cada MultimediaItem (pruebas de imagen/video)
+    const multimediaFiles = this.selectedMultimedia.map(item => item.file);
+
+    // 4. Lógica para seleccionar el servicio de storage y guardar
+    if (!this.tipoDenunciaActual) {
+      console.error("EVIDENCIA - Error Crítico: 'tipoDenunciaActual' (modo) no está definido. No se puede guardar en storage.");
+      this.toastr.error("Error interno al procesar la denuncia.");
+      return;
+    }
+
+    if (this.tipoDenunciaActual === 'oficial') {
+      this.denunciaOficialStorage.setDescripcionYEvidencia( // Asumiendo que el método se llama así en DenunciaOficialStorageService
+        this.descripcion,
+        multimediaFiles,
+        audioFiles
+      );
+      console.log('EVIDENCIA - Guardado en OFICIAL Storage');
+    } else { // Asumir 'anonima' si no es 'oficial'
+      this.denunciaAnonimaStorage.setDescripcionPruebas( // El método se llama setDescripcionPruebas en DenunciaAnonimaStorageService
+        this.descripcion,
+        multimediaFiles,
+        audioFiles
+      );
+      console.log('EVIDENCIA - Guardado en ANÓNIMA Storage');
+    }
+
+    // 5. Navegación (ya la tenías bien, pasando el tipoDenunciaActual)
+    console.log(`EVIDENCIA - Navegando a Ubicacion con modo: ${this.tipoDenunciaActual}`);
+    this.router.navigate(
+      ['/body/ubicacion'],
+      {
+        queryParams: { tipo: this.tipoDenunciaActual }, // Pasar el modo actual
+        queryParamsHandling: 'merge'
+      }
+    );
+  }
   ngOnDestroy() {
+    // Tu código de limpieza existente
     this.stopVideoRecording();
     this.cleanupVideoStream();
     this.closeCamera();
@@ -456,5 +506,7 @@ export class EvidenciaComponent implements OnInit, OnDestroy {
       this.currentStream.getTracks().forEach(track => track.stop());
       this.currentStream = null;
     }
+    // Revocar URLs de objetos multimedia para liberar memoria
+    this.selectedMultimedia.forEach(item => URL.revokeObjectURL(item.url));
   }
 }
