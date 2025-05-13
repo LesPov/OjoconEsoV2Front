@@ -15,7 +15,7 @@ import { DenunciaOficialStorageService } from '../../../middleware/services/denu
 })
 export class UbicacionComponent implements OnInit, AfterViewInit, OnDestroy {
   currentStep = 2;
-  totalSteps = 3;
+  totalSteps = 5;
   private map!: L.Map;
   private marker: L.Marker | null = null;
   selectedLocation: { lat: number; lng: number } | null = null;

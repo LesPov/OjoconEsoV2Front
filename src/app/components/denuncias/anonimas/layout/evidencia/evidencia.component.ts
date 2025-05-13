@@ -22,7 +22,7 @@ interface MultimediaItem {
 export class EvidenciaComponent implements OnInit, OnDestroy {
   subtipoDenuncia: string | null = null;
   currentStep = 1;
-  totalSteps = 3;
+  totalSteps = 5;
   // Usamos un arreglo de objetos MultimediaItem en lugar de solo File[]
   selectedMultimedia: MultimediaItem[] = [];
   descripcion: string = '';

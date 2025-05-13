@@ -1,1 +1,106 @@
-<p>registro-recidencia-oficial works!</p>
+<div class="container registro-container">
+    <h2>Datos del Incidente</h2>
+    <p class="subtitulo">Información sobre dónde y cuándo ocurrieron los hechos.</p>
+
+    <form [formGroup]="incidenteForm">
+        <!-- Zona del Incidente -->
+        <div class="form-group">
+            <label for="zonaIncidente">Zona del Incidente <span class="required">*</span></label>
+            <select id="zonaIncidente" formControlName="zonaIncidente" class="form-control">
+                <option value="" disabled>Selecciona la zona</option>
+                <option *ngFor="let zona of zonasIncidente" [value]="zona.valor">
+                    {{ zona.etiqueta }}
+                </option>
+            </select>
+            <div *ngIf="f['zonaIncidente'].invalid && f['zonaIncidente'].touched" class="error-message">
+                La zona es requerida.
+            </div>
+        </div>
+
+        <!-- Campos Condicionales según Zona -->
+        <ng-container *ngIf="f['zonaIncidente'].value === 'Urbana'">
+            <div class="form-group">
+                <label for="ciudadIncidente">Ciudad <span class="required">*</span></label>
+                <input type="text" id="ciudadIncidente" formControlName="ciudadIncidente" class="form-control"
+                    placeholder="Ej: Bogotá D.C.">
+                <div *ngIf="f['ciudadIncidente'].invalid && f['ciudadIncidente'].touched && f['ciudadIncidente'].errors?.['required']"
+                    class="error-message">
+                    La ciudad es requerida para zona urbana.
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="barrioIncidente">Barrio <span class="required">*</span></label>
+                <input type="text" id="barrioIncidente" formControlName="barrioIncidente" class="form-control"
+                    placeholder="Ej: Chapinero">
+                <div *ngIf="f['barrioIncidente'].invalid && f['barrioIncidente'].touched && f['barrioIncidente'].errors?.['required']"
+                    class="error-message">
+                    El barrio es requerido para zona urbana.
+                </div>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="f['zonaIncidente'].value === 'Rural'">
+            <div class="form-group">
+                <label for="municipioIncidente">Municipio <span class="required">*</span></label>
+                <input type="text" id="municipioIncidente" formControlName="municipioIncidente" class="form-control"
+                    placeholder="Ej: Funza">
+                <div *ngIf="f['municipioIncidente'].invalid && f['municipioIncidente'].touched && f['municipioIncidente'].errors?.['required']"
+                    class="error-message">
+                    El municipio es requerido para zona rural.
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="veredaIncidente">Vereda <span class="required">*</span></label>
+                <input type="text" id="veredaIncidente" formControlName="veredaIncidente" class="form-control"
+                    placeholder="Ej: La Esperanza">
+                <div *ngIf="f['veredaIncidente'].invalid && f['veredaIncidente'].touched && f['veredaIncidente'].errors?.['required']"
+                    class="error-message">
+                    La vereda es requerida para zona rural.
+                </div>
+            </div>
+        </ng-container>
+
+        <!-- Ciudad/Municipio General (siempre visible y opcional si ya se llenó por zona) -->
+        <div class="form-group" *ngIf="!f['zonaIncidente'].value"> <!-- O una lógica diferente para mostrarlo -->
+            <label for="ciudadGeneral">Ciudad (si no especificó zona)</label>
+            <input type="text" id="ciudadGeneral" formControlName="ciudadIncidente" class="form-control"
+                placeholder="Ciudad">
+        </div>
+        <div class="form-group" *ngIf="!f['zonaIncidente'].value">
+            <label for="municipioGeneral">Municipio (si no especificó zona)</label>
+            <input type="text" id="municipioGeneral" formControlName="municipioIncidente" class="form-control"
+                placeholder="Municipio">
+        </div>
+
+
+        <!-- Fecha del Incidente -->
+        <div class="form-group">
+            <label for="fechaIncidente">Fecha del Incidente <span class="required">*</span></label>
+            <input type="date" id="fechaIncidente" formControlName="fechaIncidente" class="form-control">
+            <div *ngIf="f['fechaIncidente'].invalid && f['fechaIncidente'].touched" class="error-message">
+                La fecha del incidente es requerida.
+            </div>
+        </div>
+
+        <!-- Hora del Incidente -->
+        <div class="form-group">
+            <label for="horaIncidente">Hora Aproximada del Incidente (formato 24h) <span
+                    class="required">*</span></label>
+            <input type="time" id="horaIncidente" formControlName="horaIncidente" class="form-control">
+            <div *ngIf="f['horaIncidente'].invalid && f['horaIncidente'].touched" class="error-message">
+                <div *ngIf="f['horaIncidente'].errors?.['required']">La hora es requerida.</div>
+                <div *ngIf="f['horaIncidente'].errors?.['pattern']">Formato de hora inválido (HH:MM).</div>
+            </div>
+        </div>
+
+        <!-- Ocurrió en Vía Pública -->
+        <div class="form-group checkbox-group">
+            <input type="checkbox" id="ocurrioViaPublica" formControlName="ocurrioViaPublica" class="form-check-input">
+            <label for="ocurrioViaPublica" class="form-check-label">¿El incidente ocurrió en vía pública?</label>
+        </div>
+    </form>
+</div>
+
+<app-navbar [currentStep]="currentStep" [totalSteps]="totalSteps" [showStepCounter]="true"
+    [denunciaSeleccionada]="incidenteForm.valid" (retroceder)="goBack()" (continuar)="handleContinue()">
+</app-navbar>

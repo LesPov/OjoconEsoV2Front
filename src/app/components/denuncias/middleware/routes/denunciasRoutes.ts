@@ -25,7 +25,7 @@ export const DenunciasRoutes: Routes = [
         path: 'registroResidenciaIncidente',
         loadComponent: () => import('../../oficial/layout/registro-recidencia-oficial/registro-recidencia-oficial.component').then(m => m.RegistroRecidenciaOficialComponent),
         data: {
-          title: 'registroResidenciaIncidente',
+          title: 'Residencia Oficial',
           componentName: 'registroResidenciaIncidente',
         },
       },
