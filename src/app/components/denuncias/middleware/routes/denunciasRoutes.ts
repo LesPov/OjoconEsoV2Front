@@ -90,6 +90,16 @@ export const DenunciasRoutes: Routes = [
           tipoDenuncia: 'subtipoDenuncia'
         }
       },
+      //RESUMEN ANONIMA 
+      {
+        path: 'resumenOficial',
+        loadComponent: () => import('../../oficial/layout/resumen-oficial/resumen-oficial.component').then(m => m.ResumenOficialComponent),
+        data: {
+          title: 'Resumen Oficial',
+          componentName: 'resumenOficial',
+          tipoDenuncia: 'resumenOficial'
+        }
+      },
       //CONSULTA PARA ANONIMAS Y OFICIALES 
       {
         path: 'consultas',
@@ -97,6 +107,14 @@ export const DenunciasRoutes: Routes = [
         data: {
           title: 'Consulta tu Denuncia',
           componentName: 'consultas'
+        }
+      },
+         {
+        path: 'consultasOficial',
+        loadComponent: () => import('../../oficial/layout/consulta-oficial/consulta-oficial.component').then(m => m.ConsultaOficialComponent),
+        data: {
+          title: 'Consulta tu Denuncia Oficial',
+          componentName: 'consultasOficial'
         }
       },
       {

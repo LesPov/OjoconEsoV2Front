@@ -96,7 +96,7 @@ export class InicioOficialComponent {
   }
 
   goToConsulta(): void {
-    this.router.navigate(['/body/consultas']);
+    this.router.navigate(['/body/consultasOficial']);
   }
 
  goToCrear(): void {

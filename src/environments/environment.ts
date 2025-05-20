@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  endpoint: 'http://localhost:2020/'
-  // endpoint: 'http://localhost:2025/'
+  endpoint: 'https://s7rlvzcx-2020.use2.devtunnels.ms/'
+   //endpoint: 'http://localhost:2020/'
 
 };
 

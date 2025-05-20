@@ -1,1 +1,172 @@
-<p>resumen-oficial works!</p>
+<div class="container resumen-container">
+  <h2 class="title">Resumen de la Denuncia Oficial</h2>
+  <p class="subtitulo">Verifica que toda la información sea correcta antes de enviar.</p>
+
+  <div class="content" *ngIf="datosResumen">
+
+    <!-- Sección Datos Generales de la Denuncia -->
+    <div class="section">
+      <h3 class="section-title">Detalles de la Denuncia</h3>
+      <div class="field">
+        <label class="label">Tipo de Denuncia:</label>
+        <p class="value">{{ datosResumen.nombreTipo || 'No especificado' }}</p>
+      </div>
+      <div class="field">
+        <label class="label">Subtipo de Denuncia:</label>
+        <p class="value">{{ datosResumen.nombreSubtipo || 'No especificado' }}</p>
+      </div>
+      <div class="field">
+        <label class="label">Descripción de los Hechos:</label>
+        <p class="value textarea-value">{{ datosResumen.descripcion || 'Sin descripción' }}</p>
+      </div>
+      <div class="field">
+        <label class="label">Dirección del Incidente (Lugar de los hechos):</label>
+        <p class="value">{{ datosResumen.direccion || 'No especificada' }}</p>
+      </div>
+    </div>
+
+    <!-- Sección Datos del Denunciante -->
+    <div class="section">
+      <h3 class="section-title">Datos del Denunciante</h3>
+      <div class="field">
+        <label class="label">Tipo de Identificación:</label>
+        <p class="value">{{ datosResumen.tipoIdentificacionDenunciante || 'No especificado' }}</p>
+      </div>
+      <div class="field">
+        <label class="label">Número de Identificación:</label>
+        <p class="value">{{ datosResumen.numeroIdentificacionDenunciante || 'No especificado' }}</p>
+      </div>
+      <div class="field">
+        <label class="label">Nombres:</label>
+        <p class="value">{{ datosResumen.nombreDenunciante || 'No especificado' }}</p>
+      </div>
+      <div class="field">
+        <label class="label">Apellidos:</label>
+        <p class="value">{{ datosResumen.apellidoDenunciante || 'No especificado' }}</p>
+      </div>
+      <div class="field" *ngIf="datosResumen.fechaNacimientoDenunciante">
+        <label class="label">Fecha de Nacimiento:</label>
+        <p class="value">{{ datosResumen.fechaNacimientoDenunciante | date:'dd/MM/yyyy' }}</p>
+      </div>
+      <div class="field">
+        <label class="label">¿Denuncia en nombre de tercero?</label>
+        <p class="value">{{ datosResumen.denunciaEnNombreDeTercero ? 'Sí' : 'No' }}</p>
+      </div>
+    </div>
+
+    <!-- Sección Datos del Incidente -->
+    <div class="section">
+      <h3 class="section-title">Detalles del Incidente</h3>
+      <div class="field">
+        <label class="label">Zona del Incidente:</label>
+        <p class="value">{{ datosResumen.zonaIncidente || 'No especificada' }}</p>
+      </div>
+      <ng-container *ngIf="datosResumen.zonaIncidente === 'Urbana'">
+        <div class="field" *ngIf="datosResumen.ciudadIncidente">
+          <label class="label">Ciudad:</label>
+          <p class="value">{{ datosResumen.ciudadIncidente }}</p>
+        </div>
+        <div class="field" *ngIf="datosResumen.barrioIncidente">
+          <label class="label">Barrio:</label>
+          <p class="value">{{ datosResumen.barrioIncidente }}</p>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="datosResumen.zonaIncidente === 'Rural'">
+        <div class="field" *ngIf="datosResumen.municipioIncidente">
+          <label class="label">Municipio:</label>
+          <p class="value">{{ datosResumen.municipioIncidente }}</p>
+        </div>
+        <div class="field" *ngIf="datosResumen.veredaIncidente">
+          <label class="label">Vereda:</label>
+          <p class="value">{{ datosResumen.veredaIncidente }}</p>
+        </div>
+      </ng-container>
+       <!-- Mostrar ciudad/municipio general si no es por zona específica -->
+      <div class="field" *ngIf="!datosResumen.barrioIncidente && !datosResumen.veredaIncidente && datosResumen.ciudadIncidente && datosResumen.zonaIncidente !== 'Urbana'">
+        <label class="label">Ciudad (General):</label>
+        <p class="value">{{ datosResumen.ciudadIncidente }}</p>
+      </div>
+       <div class="field" *ngIf="!datosResumen.barrioIncidente && !datosResumen.veredaIncidente && datosResumen.municipioIncidente && datosResumen.zonaIncidente !== 'Rural'">
+        <label class="label">Municipio (General):</label>
+        <p class="value">{{ datosResumen.municipioIncidente }}</p>
+      </div>
+
+      <div class="field">
+        <label class="label">Fecha del Incidente:</label>
+        <p class="value">{{ datosResumen.fechaIncidente | date:'dd/MM/yyyy' }}</p>
+      </div>
+      <div class="field">
+        <label class="label">Hora del Incidente:</label>
+        <p class="value">{{ datosResumen.horaIncidente || 'No especificada' }}</p>
+      </div>
+      <div class="field">
+        <label class="label">¿Ocurrió en Vía Pública?</label>
+        <p class="value">{{ datosResumen.ocurrioViaPublica ? 'Sí' : 'No' }}</p>
+      </div>
+    </div>
+
+    <!-- Evidencias Multimedia -->
+    <div class="section evidencias-section">
+      <h3 class="section-title">Evidencias Adjuntas</h3>
+      <div *ngIf="previewEvidencia.length > 0; else noEvidencias" class="evidencias-grid">
+        <div *ngFor="let item of previewEvidencia" class="evidencia-item" [ngSwitch]="item.type">
+          <img *ngSwitchCase="'image'" [src]="item.url" alt="Evidencia Imagen" class="evidencia-media" (click)="openMediaPreview(item)">
+          <video *ngSwitchCase="'video'" [src]="item.url" controls class="evidencia-media"></video>
+          <div *ngSwitchCase="'audio'" class="audio-container">
+            <p>{{ item.file.name }}</p>
+            <audio [src]="item.url" controls class="audio-player"></audio>
+          </div>
+          <p *ngSwitchDefault class="evidencia-nombre-archivo">{{ item.file.name }} (Tipo no previsualizable)</p>
+        </div>
+      </div>
+      <ng-template #noEvidencias>
+        <p class="no-evidencias">No se adjuntaron evidencias.</p>
+      </ng-template>
+    </div>
+
+  </div>
+
+  <div *ngIf="!datosResumen || !isEnviarButtonEnabled()" class="alert-warning">
+    <p>Faltan datos para completar la denuncia. Por favor, retrocede y completa todos los pasos.</p>
+  </div>
+</div>
+
+<!-- Navbar: El botón "Continuar" ahora se llamará "Enviar Denuncia" -->
+<app-navbar
+  [currentStep]="currentStep"
+  [totalSteps]="totalSteps"
+  [showStepCounter]="true"
+  finalStepLabel="Enviar Denuncia" 
+  [denunciaSeleccionada]="isEnviarButtonEnabled()"
+  (retroceder)="goBack()"
+  (continuar)="enviarDenunciaOficial()">
+</app-navbar>
+
+<!-- Modal de previsualización de imagen/video (genérico) -->
+<div class="media-preview-modal" *ngIf="selectedMediaItem" (click)="closeMediaPreview()">
+  <img *ngIf="selectedMediaItem.type === 'image'" [src]="selectedMediaItem.url" alt="Vista previa ampliada" class="media-preview-content">
+  <video *ngIf="selectedMediaItem.type === 'video'" [src]="selectedMediaItem.url" controls autoplay class="media-preview-content"></video>
+  <!-- Podrías añadir un reproductor de audio si quisieras un modal para audio también -->
+</div>
+
+<!-- Modal de éxito (similar al de ResumenComponent) -->
+<div *ngIf="showModal" class="modal-overlay">
+  <div class="modal-content">
+    <span class="close-modal-btn" (click)="finalizarYRedirigir()">×</span>
+    <h3>¡Denuncia Oficial Enviada!</h3>
+    <p>Tu denuncia ha sido registrada exitosamente.</p>
+    <p>Guarda la siguiente clave única para consultar el estado de tu denuncia:</p>
+    <div class="clave-unica-container">
+      <strong id="claveUnicaText">{{ claveUnica }}</strong>
+      <button (click)="copiarClave()" class="btn-copiar" title="Copiar clave">
+        <i class='bx bx-copy'></i>
+      </button>
+    </div>
+    <button (click)="finalizarYRedirigir()" class="btn btn-primary">Entendido</button>
+  </div>
+</div>
+
+<div *ngIf="isLoading" class="loading-overlay">
+  <div class="spinner"></div>
+  <p>Enviando denuncia...</p>
+</div>

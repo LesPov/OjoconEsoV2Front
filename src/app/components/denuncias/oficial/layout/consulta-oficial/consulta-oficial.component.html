@@ -1,0 +1,81 @@
+<div class="container">
+    <div class="form-group">
+        <label for="claveUnica">Clave del Radicado:</label>
+        <input id="claveUnica" class="form-control" [(ngModel)]="claveUnica"
+            placeholder="Ingresa la clave del radicado" />
+    </div>
+    <button class="btn" (click)="consultarDenuncia()">Consultar</button>
+
+    <div class="content" *ngIf="denuncia">
+        <h2>Detalles de la Denuncia Oficial</h2>
+
+        <!-- Sección básica -->
+        <p class="detail-item"><strong>Tipo:</strong> {{ denuncia.tipoDenuncia.nombre }}</p>
+        <p class="detail-item"><strong>Subtipo:</strong> {{ denuncia.subtipoDenuncia.nombre }}</p>
+        <p class="detail-item"><strong>Descripción:</strong> {{ denuncia.descripcion }}</p>
+        <p class="detail-item"><strong>Dirección Denuncia:</strong> {{ denuncia.direccion }}</p>
+        <p class="detail-item"><strong>Estado:</strong> {{ denuncia.status }}</p>
+        <p class="detail-item"><strong>Creada:</strong> {{ denuncia.fechaCreacion | date:'yyyy-MM-dd HH:mm' }}</p>
+        <p class="detail-item"><strong>Actualizada:</strong> {{ denuncia.fechaActualizacion | date:'yyyy-MM-dd HH:mm' }}
+        </p>
+
+        <!-- Sección Denunciante -->
+        <h3>Denunciante</h3>
+        <p class="detail-item"><strong>Tipo ID:</strong> {{ denuncia.denunciante.tipoIdentificacion }}</p>
+        <p class="detail-item"><strong>Número ID:</strong> {{ denuncia.denunciante.numeroIdentificacion }}</p>
+        <p class="detail-item"><strong>Nombre:</strong> {{ denuncia.denunciante.nombre }} {{
+            denuncia.denunciante.apellido }}</p>
+        <p class="detail-item"><strong>Fecha Nac.:</strong> {{ denuncia.denunciante.fechaNacimiento | date:'yyyy-MM-dd'
+            }}</p>
+        <p class="detail-item"><strong>En nombre de tercero:</strong>
+            {{ denuncia.denunciante.enNombreDeTercero ? 'Sí' : 'No' }}
+        </p>
+
+        <!-- Sección Incidente -->
+        <h3>Incidente</h3>
+        <p class="detail-item"><strong>Zona:</strong> {{ denuncia.incidente.zona }}</p>
+        <p class="detail-item" *ngIf="denuncia.incidente.ciudad"><strong>Ciudad:</strong> {{ denuncia.incidente.ciudad
+            }}</p>
+        <p class="detail-item" *ngIf="denuncia.incidente.barrio"><strong>Barrio:</strong> {{ denuncia.incidente.barrio
+            }}</p>
+        <p class="detail-item" *ngIf="denuncia.incidente.municipio"><strong>Municipio:</strong> {{
+            denuncia.incidente.municipio }}</p>
+        <p class="detail-item" *ngIf="denuncia.incidente.vereda"><strong>Vereda:</strong> {{ denuncia.incidente.vereda
+            }}</p>
+        <p class="detail-item"><strong>Fecha Incidente:</strong> {{ denuncia.incidente.fecha | date:'yyyy-MM-dd' }}</p>
+        <p class="detail-item"><strong>Hora Incidente:</strong> {{ denuncia.incidente.hora }}</p>
+        <p class="detail-item"><strong>En vía pública:</strong> {{ denuncia.incidente.viaPublica ? 'Sí' : 'No' }}</p>
+
+        <!-- Mapa -->
+        <div class="mapa">
+            <div *ngIf="mapLoaded" id="mapConsulta"></div>
+            <button class="btn1" (click)="changeTheme()"><i class="bx bx-map-alt"></i></button>
+        </div>
+
+        <!-- Pruebas -->
+        <div *ngIf="denuncia.pruebas && denuncia.pruebas.length > 0" class="attachments">
+            <h3>Pruebas Adjuntas</h3>
+            <div *ngFor="let p of denuncia.pruebas" class="attachment-item">
+                <ng-container [ngSwitch]="p.type">
+                    <img *ngSwitchCase="'image'" [src]="p.url" alt="Prueba Imagen" class="img-fluid" />
+                    <video *ngSwitchCase="'video'" [src]="p.url" controls class="video-fluid"></video>
+                </ng-container>
+            </div>
+        </div>
+
+        <!-- Audio -->
+        <div *ngIf="denuncia.audio" class="audio-attachment">
+            <h3>Audio Adjunto</h3>
+            <audio controls>
+                <source [src]="denuncia.audio" type="audio/mpeg" />
+                Tu navegador no soporta el elemento de audio.
+            </audio>
+        </div>
+    </div>
+
+    <div *ngIf="!denuncia && error" class="error-message">
+        <p>{{ error }}</p>
+    </div>
+
+ 
+</div>

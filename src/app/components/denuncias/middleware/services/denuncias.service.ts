@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
@@ -90,7 +90,7 @@ export class DenunciasService {
     );
   }
 
-   // --- MÉTODO crearDenunciaOficial COMPLETAMENTE ACTUALIZADO ---
+  // --- MÉTODO crearDenunciaOficial COMPLETAMENTE ACTUALIZADO ---
   crearDenunciaOficial(
     denuncia: DenunciaOficialCreacionInterface, // Usa la interfaz de CREACIÓN que ya definiste
     pruebas: File[] = [],
@@ -179,5 +179,27 @@ export class DenunciasService {
         params: { claveUnica } // Se envía la clave como parámetro de consulta
       }
     );
+  }
+  consultarDenunciaOficial(
+    claveUnica: string
+  ): Observable<{
+    success: boolean;
+    message: string;
+    denuncia: DenunciaOficialResponseInterface;
+  }> {
+    const token = localStorage.getItem('token') || ''; // Si no hay token, es string vacío
+    // Si token es '', el header será 'Authorization: Bearer '
+    // Esto es manejado por tu backend (extractBearerToken devuelve null, y se establece req.user = null)
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const params = new HttpParams().set('claveUnica', claveUnica);
+
+    return this.http.get<{
+      success: boolean;
+      message: string;
+      denuncia: DenunciaOficialResponseInterface;
+    }>(`${this.baseUrl}/oficiales/consultas`, {
+      headers,
+      params,
+    });
   }
 }

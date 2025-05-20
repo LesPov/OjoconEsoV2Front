@@ -1,77 +1,76 @@
-// En tu archivo de interfaces del frontend, por ejemplo:
 // src/app/modules/admin/middleware/interfaces/denunciasOficialInterface.ts
 
-// (Si tienes ENUMs definidos en el frontend para tipos de identificación o zona, impórtalos o defínelos)
-// export enum TipoIdentificacionEnumFrontend { /* ... */ }
-// export enum ZonaIncidenteEnumFrontend { /* ... */ }
-
-export interface DenunciaOficialCreacionInterface {
-  // --- Campos que ya tenías y son correctos para la creación ---
-  descripcion: string;
-  direccion: string;     // Dirección del incidente
-  nombreTipo: string;    // Nombre del tipo de denuncia (el backend busca el ID)
-  nombreSubtipo: string; // Nombre del subtipo de denuncia (el backend busca el ID)
-
-  // --- NUEVOS CAMPOS DEL DENUNCIANTE (quien realiza la denuncia) ---
-  tipoIdentificacionDenunciante: string; // O TipoIdentificacionEnumFrontend si lo usas
-  numeroIdentificacionDenunciante: string;
-  nombreDenunciante: string;
-  apellidoDenunciante: string;
-  fechaNacimientoDenunciante?: string; // Formato "YYYY-MM-DD". Opcional si en el backend es allowNull:true
-  denunciaEnNombreDeTercero: boolean; // "¿Realiza esta denuncia en nombre de otra persona?"
-
-  // --- NUEVOS CAMPOS DEL INCIDENTE ---
-  zonaIncidente: string; // O ZonaIncidenteEnumFrontend si lo usas
-  ciudadIncidente?: string; // Opcional si el backend lo permite o si municipioIncidente está presente
-  barrioIncidente?: string; // Opcional, relevante si zonaIncidente es 'Urbana'
-  municipioIncidente?: string; // Opcional si el backend lo permite o si ciudadIncidente está presente
-  veredaIncidente?: string; // Opcional, relevante si zonaIncidente es 'Rural'
-  fechaIncidente: string; // Formato "YYYY-MM-DD"
-  horaIncidente: string;  // Formato "HH:MM"
-  ocurrioViaPublica: boolean;
-
-  // Los campos como id, claveUnica, status, pruebas, audio, tieneEvidencia, userId,
-  // fechaCreacion, fechaActualizacion, tipoDenuncia, subtipoDenuncia
-  // NO se envían desde el frontend al crear la denuncia.
-  // Son generados/manejados por el backend o son parte de la respuesta.
+export interface MediaAttachment {
+  type: 'image' | 'video';
+  url: string;
 }
 
-// La DenunciaOficialResponseInterface (para la respuesta del backend) también debe estar actualizada
-// para reflejar todos los campos que el backend devuelve.
+// Interfaz para el objeto 'denunciante' que viene del backend
+export interface DenuncianteInfo {
+  tipoIdentificacion: string;
+  numeroIdentificacion: string;
+  nombre: string;
+  apellido: string;
+  fechaNacimiento?: string; // "YYYY-MM-DD"
+  enNombreDeTercero: boolean;
+}
+
+// Interfaz para el objeto 'incidente' que viene del backend
+export interface IncidenteInfo {
+  zona: string;
+  ciudad?: string;
+  barrio?: string | null; // Puede ser null
+  municipio?: string;
+  vereda?: string;
+  fecha: string; // "YYYY-MM-DD"
+  hora: string;  // "HH:MM"
+  viaPublica: boolean; // Ojo: en tu JSON es 'viaPublica', no 'ocurrioViaPublica'
+}
+
 export interface DenunciaOficialResponseInterface {
   id: number;
   descripcion: string;
+  direccion: string; // Dirección principal de la denuncia, no del incidente necesariamente
+  claveUnica: string;
+  status: 'Pendiente' | 'En Proceso' | 'Cerrada'; // Ajusta según tus estados
+  tieneEvidencia: boolean;
+  pruebas?: MediaAttachment[]; // Asumiendo que el backend las envía ya procesadas como MediaAttachment
+  audio?: string; // Asumiendo que el backend envía la URL completa
+  // userId?: number; // Si el backend lo envía y lo necesitas
 
+  // OBJETOS ANIDADOS TAL COMO VIENEN DEL BACKEND
+  denunciante: DenuncianteInfo;
+  incidente: IncidenteInfo;
+
+  // TIPOS Y SUBTIPOS (con 't' y 's' minúsculas)
+  tipoDenuncia: { id: number; nombre: string };
+  subtipoDenuncia: { id: number; nombre: string };
+
+  // FECHAS DE LA DENUNCIA (no del incidente)
+  fechaCreacion: string; // "YYYY-MM-DDTHH:mm:ss.sssZ"
+  fechaActualizacion: string; // "YYYY-MM-DDTHH:mm:ss.sssZ"
+
+  usuarioRegistrador?: any; // O una interfaz más específica si lo usas
+}
+
+// Interfaz para la creación (esta parece estar bien, ya que mapea a los campos del backend)
+export interface DenunciaOficialCreacionInterface {
+  descripcion: string;
   direccion: string;
   nombreTipo: string;
   nombreSubtipo: string;
-  claveUnica: string;
-  status: 'Pendiente' | 'En Proceso' | 'Cerrada';
-  tieneEvidencia: boolean;
-  pruebas?: string;
-  audio?: string;
-  userId: number;
-
-  tipoIdentificacionDenunciante: string; // o el tipo del ENUM
+  tipoIdentificacionDenunciante: string;
   numeroIdentificacionDenunciante: string;
   nombreDenunciante: string;
   apellidoDenunciante: string;
-  fechaNacimientoDenunciante?: string; // o Date
+  fechaNacimientoDenunciante?: string;
   denunciaEnNombreDeTercero: boolean;
-
-  zonaIncidente: string; // o el tipo del ENUM
+  zonaIncidente: string;
   ciudadIncidente?: string;
   barrioIncidente?: string;
   municipioIncidente?: string;
   veredaIncidente?: string;
-  fechaIncidente: string; // o Date
+  fechaIncidente: string;
   horaIncidente: string;
   ocurrioViaPublica: boolean;
-
-  createdAt: string; // o Date
-  updatedAt: string; // o Date
-
-  TipoDenuncia?: { id: number; nombre: string };
-  SubtipoDenuncia?: { id: number; nombre: string };
-  // UsuarioRegistrador?: { id: number; username: string; /* ... */ };
 }

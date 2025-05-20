@@ -2,8 +2,8 @@
 
 import { Injectable } from '@angular/core';
 // Asegúrate de que esta ruta es correcta y que la interfaz es para la CREACIÓN
-import { DenunciaOficialCreacionInterface, DenunciaOficialResponseInterface } from '../../../admin/middleware/interfaces/denunciasOficialInterface';
-
+import { DenunciaOficialCreacionInterface } from '../../../admin/middleware/interfaces/denunciasOficialInterface';
+ 
 @Injectable({
   providedIn: 'root'
 })
@@ -11,8 +11,10 @@ export class DenunciaOficialStorageService {
   // Define una clave ÚNICA para el localStorage de denuncias oficiales
   private readonly localStorageKey = 'denunciaOficialInProgress'; // <--- CLAVE DIFERENTE
 
-  private denuncia: Partial<DenunciaOficialResponseInterface> = {};
-  private pruebasFiles: File[] = [];
+private denuncia: Partial<DenunciaOficialCreacionInterface & {
+  pruebas?: string;
+  audio?: string;
+}> = {};  private pruebasFiles: File[] = [];
   private audioFiles: File[] = [];
 
   constructor() {

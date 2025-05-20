@@ -26,7 +26,7 @@ export class ConsultasComponent implements OnInit, OnDestroy {
   error: string = '';
   mapLoaded: boolean = false;
   private map!: L.Map;
-  
+
   // Referencia al tile layer actual para poder removerlo al cambiar tema
   private currentTileLayer!: L.TileLayer;
 
@@ -65,7 +65,7 @@ export class ConsultasComponent implements OnInit, OnDestroy {
     private denunciasService: DenunciasService,
     private toastr: ToastrService,
     private botInfoService: BotInfoService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.botInfoService.setInfoList(this.infoEvidenciaList);
@@ -98,11 +98,23 @@ export class ConsultasComponent implements OnInit, OnDestroy {
           console.log('Dirección recibida:', this.denuncia.direccion);
           this.initMapConsulta(this.denuncia.direccion);
         },
-        (error) => {
-          console.error('Error en la consulta:', error);
-          this.denuncia = null;
-          this.error = error.error.error;
-          this.toastr.error('Clave incorrecta, por favor verifica', 'Error de consulta');
+        (err) => {
+          console.error('Error en la consulta:', err);
+
+          // Extraemos primero el payload que viene del back
+          const payload = err.error || {};
+          const backendMessage: string = payload.message  // el mensaje principal de tu errorMessages
+            || 'Error inesperado en la consulta';
+          const backendDetail: string = payload.error  // el detalle adicional que envías
+            || '';
+
+          // Guarda en this.error si lo necesitas para mostrar en el template
+          this.error = backendMessage;
+
+          // Muestra el toast con la info concreta del back
+          // Primer argumento: texto del toast
+          // Segundo argumento: título del toast
+          this.toastr.error(backendDetail || backendMessage);
         }
       );
   }
@@ -115,7 +127,7 @@ export class ConsultasComponent implements OnInit, OnDestroy {
       let latitude: number, longitude: number;
       const regex = /\(Lat:\s*([\d\.\-]+),\s*Lng:\s*([\d\.\-]+)\)/;
       const match = direccion.match(regex);
-      
+
       if (match) {
         latitude = parseFloat(match[1]);
         longitude = parseFloat(match[2]);
@@ -137,7 +149,7 @@ export class ConsultasComponent implements OnInit, OnDestroy {
           this.toastr.warning('No se pudieron obtener las coordenadas exactas, se usará una ubicación por defecto.');
         }
       }
-      
+
       this.mapLoaded = true;
       setTimeout(() => {
         try {

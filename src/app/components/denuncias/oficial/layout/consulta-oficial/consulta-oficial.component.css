@@ -1,0 +1,39 @@
+.container {
+  width: 100%; position: absolute; top: 30px; z-index: 1; padding: 2rem;
+}
+.form-group { margin-bottom: 1.5rem; }
+label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+.form-control {
+  width:100%; padding:0.75rem; border:1px solid #ccc; border-radius:5px;
+  font-size:1rem; transition:border-color 0.3s;
+}
+.form-control:focus { outline:none; border-color:#ccc; box-shadow:0 0 0 2px rgba(52,152,219,0.2); }
+.btn {
+  padding:0.75rem 2rem; border:none; border-radius:5px; font-size:1rem;
+  font-weight:500; cursor:pointer; transition:all 0.3s; background:#ccc;
+}
+.btn:hover { background:#2980b9; color:#fff; transform:translateY(2px); }
+
+.content {
+  margin-top:50px; background:#f9f9f9; padding:1.5rem; border-radius:8px;
+  box-shadow:0 0 20px rgba(0,0,0,0.29);
+  display:flex; flex-direction:column; align-items:center;
+}
+.detail-item { margin-bottom:0.75rem; font-size:1rem; color:#555; text-align:center; }
+.detail-item strong { color:#333; font-weight:600; margin-bottom:10px; }
+
+.mapa { position:relative; width:100%; height:300px; margin-bottom:15px; }
+#mapConsulta { width:100%; height:100%; border-radius:8px; box-shadow:0 2px 4px rgba(0,0,0,0.1); }
+.btn1 {
+  position:absolute; top:10px; right:10px; z-index:1000; padding:10px;
+  background:#232949; border-radius:5px; cursor:pointer; transition:all 0.3s;
+}
+.btn1:hover { background:#2980b9; color:#fff; transform:translateY(2px); }
+.btn1 i { font-size:25px; color:#fff; }
+
+.attachments { margin-top:1.5rem; width:100%; }
+.attachment-item { margin-bottom:1rem; }
+.img-fluid, .video-fluid { max-width:100%; height:auto; border-radius:8px; }
+.video-fluid { margin-bottom:1rem; }
+.audio-attachment { margin-top:1.5rem; width:100%; }
+audio { width:100%; margin-top:1rem; }
